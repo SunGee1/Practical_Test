@@ -1,2 +1,1 @@
-# Practical_Test
 # HelloWorld
