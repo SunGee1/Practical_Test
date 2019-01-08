@@ -11,6 +11,6 @@ require("settings.php");
 $orderNum = $_POST['order_number'];
 
 $query = "UPDATE user_order SET status_ref = 4 WHERE id = '{$orderNum}'";
-$result = $connection->query($query);
+$result = $db_con->query($query);
 
-die(json_encode("success"));
+// die(text("success"));

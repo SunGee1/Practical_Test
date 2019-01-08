@@ -38,7 +38,6 @@ function ViewOrdersTable ()
 					};
 					AddOrderToTable(order);
 				};
-				// view_order_table.draw();
 			},
 			error : function(jqXHR, textStatus, errorThrown)
 			{
@@ -153,27 +152,46 @@ function PlaceOrder ()
 	}
 	else
 	{
-		ErrorDialog("Warning!", "fields can not be empty");
+		ErrorDialog("Warning!", "Fields can not be empty");
 	}
 }
 
 function CancelOrder(orderNum)
 {
-	$.ajax(
-	{
-		url : "cancel_order.php",
-		data : {order_number: orderNum},
-		// dataType : "json",
-		type : 'POST',
-		success : function(success)
+	$('#error_dialog').html("Do you really want to cancel the order?");
+	$('#error_dialog').dialog
+	({
+		title: "Notice",
+		modal: true,
+		height: "auto",
+		width: "auto",
+		buttons:
 		{
-			// add code here to update table row only, live.
-			refreshTable();
-		},
-        error : function(jqXHR, textStatus, errorThrown)
-        {
-            console.log(textStatus, errorThrown);
-        }
+			"Yes": function()
+			{
+				$.ajax(
+				{
+					url : "cancel_order.php",
+					data : {order_number: orderNum},
+					dataType : "text",
+					type : 'POST',
+					success : function(success)
+					{
+						// add code here to update table row only, live.
+						ViewOrdersTable();
+					},
+			        error : function(jqXHR, textStatus, errorThrown)
+			        {
+			            console.log(textStatus, errorThrown);
+			        }
+				});
+    	    	$(this).dialog('close');
+			},
+			"No": function()
+			{
+    	    	$(this).dialog('close');
+			}
+		}
 	});
 }
 
@@ -275,7 +293,11 @@ function AddOrderToTable(order)
 			]
 		});
 	}
-	
+	var buttons = "<input id='row_button_update_order_"+order.order_id+"' type='button' class='ui-button ui-corner-all ui-widget' onclick='OrderDialog("+order.order_id+")' value='Update order'><input id='row_button_cancel_order_"+order.order_id+"' type='button' class='ui-button ui-corner-all ui-widget' onclick='CancelOrder("+order.order_id+")' value='Cancel order'>";
+	if (order.status == "Canceled")
+	{
+		buttons = "";
+	}
 	table.row.add([
 					order.firstname,
 					order.order_id,
@@ -283,8 +305,9 @@ function AddOrderToTable(order)
 					order.order_date,
 					order.order_update,
 					order.status,
-					"<input type='button' class='ui-button ui-corner-all ui-widget' onclick='OrderDialog("+order.order_id+")' value='Update order'><input type='button' class='ui-button ui-corner-all ui-widget' onclick='CancelOrder("+order.order_id+")' value='Cancel order'>"
+					buttons
 				]).draw();
+	// console.log(order.status);
 }
 
 function ErrorDialog(dialog_title, error_message)
