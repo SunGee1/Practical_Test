@@ -26,7 +26,7 @@ Step 4 : Push your completed project with your own branch with the test ID as yo
 
 ## Additional Information
 
-This project is a online ordering application that allows users to order products online.
+This project is an online ordering application that allows users to order products online.
 
 The existing admin username and password for the ordering application is admin, and password.
 
