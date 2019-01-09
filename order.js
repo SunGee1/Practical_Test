@@ -310,6 +310,51 @@ function AddOrderToTable(order)
 	// console.log(order.status);
 }
 
+function ShowInventory()
+{
+	// if (!"inventory is empty")
+	// {
+		$.ajax(
+		{
+			url : "get_inventory_items.php",
+			// data : {order_number: orderNum, products: product_quantities},
+			dataType : "json",
+			// type : 'POST',
+			success : function(result)
+			{
+				$("#inventory ul").each(function()
+					{
+						append(result);
+						
+					});
+
+				$('#inventory').dialog
+				({
+					title: result.firstname + "'s Inventory",
+					modal: true,
+					height: "auto",
+					width: "auto",
+					buttons:
+					{
+						"Close": function()
+						{
+							$(this).dialog('close');
+						}
+					}
+				});
+			},
+	        error : function(jqXHR, textStatus, errorThrown)
+	        {
+	            console.log(textStatus, errorThrown);
+	        }
+		});
+	// } else
+	// {
+	// 	console.log("You have no items in you inventory");
+	// }
+}
+
+
 function ErrorDialog(dialog_title, error_message)
 {
 	$('#error_dialog').html(error_message);

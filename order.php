@@ -74,12 +74,18 @@
 			<tr>
 				<td id='place_order_button'><input class="ui-button ui-corner-all ui-widget" type='button' onclick='PlaceOrder()' value='Place order' ></td>
 			 	<td id='update_order_button'><input class="ui-button ui-corner-all ui-widget" type='button' value='Update order' ></td>
-			 	<!-- <td style='display:none'></td> -->
 			</tr>
 	 	</footer>
 	 </table>
 	<input style='margin-top: 3px;' type='button' class="ui-button ui-corner-all ui-widget" id="place_new_order" onclick='OrderDialog()' value='Place new order'>
+	<input style='margin-top: 3px;' type='button' class="ui-button ui-corner-all ui-widget" id="inventory_button" onclick='' value='Show Inventory'>
 
+	<div id="inventory" style="display: none">
+		<ul>
+		</ul>
+		<input type="button" name="eat" value="Eat">
+		<input type="button" name="chuck" value="Chuck">
+	</div>
 
 	<!-- ----- temp code that needs to be moved to its own file ----- -->
 	<div id="error_dialog">
