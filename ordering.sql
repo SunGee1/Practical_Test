@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 08, 2019 at 09:49 AM
+-- Generation Time: Jan 09, 2019 at 09:14 PM
 -- Server version: 10.1.36-MariaDB
 -- PHP Version: 7.2.10
 
@@ -80,7 +80,19 @@ INSERT INTO `order_product` (`order_ref`, `product_ref`, `quantity`) VALUES
 (104, 3, 1),
 (104, 4, 1),
 (104, 5, 1),
-(104, 6, 1);
+(104, 6, 1),
+(114, 6, 67),
+(115, 2, 3),
+(115, 3, 3),
+(115, 4, 3),
+(115, 5, 3),
+(116, 2, 9),
+(116, 3, 9),
+(116, 4, 9),
+(116, 5, 9),
+(116, 6, 9),
+(117, 3, 4),
+(117, 4, 1);
 
 -- --------------------------------------------------------
 
@@ -123,9 +135,10 @@ CREATE TABLE `status` (
 
 INSERT INTO `status` (`id`, `label`) VALUES
 (1, 'Placed'),
-(2, 'Delivery in progress'),
-(3, 'Delivered'),
-(4, 'Canceled');
+(2, 'Delivered'),
+(3, 'Canceled'),
+(4, 'Collected'),
+(5, 'Archived');
 
 -- --------------------------------------------------------
 
@@ -153,6 +166,19 @@ INSERT INTO `user` (`id`, `username`, `password`, `firstname`, `surname`, `admin
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `user_inventory`
+--
+
+CREATE TABLE `user_inventory` (
+  `item_id` int(11) NOT NULL,
+  `inv_user_ref` int(11) NOT NULL,
+  `item_name` int(11) NOT NULL,
+  `item_quantity` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `user_order`
 --
 
@@ -172,13 +198,17 @@ INSERT INTO `user_order` (`id`, `user_ref`, `order_date`, `order_update`, `statu
 (104, 2, '2019-01-03 11:51:23', '2019-01-07 09:22:35', 4),
 (105, 2, '2019-01-03 11:57:05', '2019-01-03 18:14:25', 1),
 (106, 2, '2019-01-03 12:21:23', '2019-01-07 09:08:52', 1),
-(107, 2, '2019-01-03 12:22:45', '2019-01-03 12:23:11', 1),
+(107, 2, '2019-01-03 12:22:45', '2019-01-09 18:07:02', 2),
 (108, 2, '2019-01-03 12:23:59', '2019-01-07 05:41:13', 1),
 (109, 2, '2019-01-03 18:02:23', '2019-01-07 08:59:55', 1),
 (110, 2, '2019-01-03 18:14:11', '2019-01-03 18:52:02', 1),
-(111, 2, '2019-01-03 18:51:59', '2019-01-07 08:33:42', 1),
+(111, 2, '2019-01-03 18:51:59', '2019-01-09 15:46:09', 4),
 (112, 2, '2019-01-04 11:11:57', '2019-01-07 08:59:16', 1),
-(113, 2, '2019-01-07 08:36:53', '0000-00-00 00:00:00', 1);
+(113, 2, '2019-01-07 08:36:53', '0000-00-00 00:00:00', 1),
+(114, 2, '2019-01-09 17:12:33', '2019-01-09 17:12:39', 4),
+(115, 2, '2019-01-09 18:03:12', '2019-01-09 18:04:55', 4),
+(116, 2, '2019-01-09 18:06:00', '2019-01-09 18:06:04', 3),
+(117, 2, '2019-01-09 18:06:19', '0000-00-00 00:00:00', 1);
 
 --
 -- Indexes for dumped tables
@@ -204,6 +234,12 @@ ALTER TABLE `user`
   ADD UNIQUE KEY `username` (`username`);
 
 --
+-- Indexes for table `user_inventory`
+--
+ALTER TABLE `user_inventory`
+  ADD PRIMARY KEY (`item_id`);
+
+--
 -- Indexes for table `user_order`
 --
 ALTER TABLE `user_order`
@@ -223,7 +259,7 @@ ALTER TABLE `product`
 -- AUTO_INCREMENT for table `status`
 --
 ALTER TABLE `status`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `user`
@@ -232,10 +268,16 @@ ALTER TABLE `user`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
+-- AUTO_INCREMENT for table `user_inventory`
+--
+ALTER TABLE `user_inventory`
+  MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `user_order`
 --
 ALTER TABLE `user_order`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=114;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=118;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
