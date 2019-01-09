@@ -282,6 +282,9 @@ function UpdateRow(result)
 
 function AddOrderToTable(order)
 {
+	var buttons = "";
+	var status = "";
+
 	if(!table)
 	{
 		table = $('#view_order_table').DataTable(
@@ -293,18 +296,33 @@ function AddOrderToTable(order)
 			]
 		});
 	}
-	var buttons = "<input id='row_button_update_order_"+order.order_id+"' type='button' class='ui-button ui-corner-all ui-widget' onclick='OrderDialog("+order.order_id+")' value='Update order'><input id='row_button_cancel_order_"+order.order_id+"' type='button' class='ui-button ui-corner-all ui-widget' onclick='CancelOrder("+order.order_id+")' value='Cancel order'>";
-	if (order.status == "Canceled")
+
+	if (order.status == "Placed") /*Placed*/
+	{
+		buttons = "<input id='row_button_update_order_"+order.order_id+"' type='button' class='ui-button ui-corner-all ui-widget' onclick='OrderDialog("+order.order_id+")' value='Update order'><input id='row_button_cancel_order_"+order.order_id+"' type='button' class='ui-button ui-corner-all ui-widget' onclick='CancelOrder("+order.order_id+")' value='Cancel order'>";
+		status = "<font color='blue'>"+order.status+"</font>";
+	} else if (order.status == "Delivered") /*Delivered*/
+	{
+		buttons = "<input id='row_button_collect_order_"+order.order_id+"' type='button' class='ui-button ui-corner-all ui-widget' onclick='CollectOrder("+order.order_id+")' value='Collect order'>";
+		status = "<font color='green'>"+order.status+"</font>";
+	} else if (order.status == "Canceled") /*Canceled*/
 	{
 		buttons = "";
+		status = "<font color='red'>"+order.status+"</font>";
+	} else /*Collected, Archived*/
+	{
+		buttons = "";
+		status = order.status;
 	}
+	
 	table.row.add([
 					order.firstname,
 					order.order_id,
 					"R" + order.value + ".00",
 					order.order_date,
 					order.order_update,
-					order.status,
+					// <font color="red">This is some text!</font>
+					status,
 					buttons
 				]).draw();
 	// console.log(order.status);
