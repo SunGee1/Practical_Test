@@ -27,12 +27,16 @@
 	date_default_timezone_set('Africa/Harare');
 	$date = date('Y-m-d H:i:s', time());
 
+	$button = "<input id='row_button_update_order_". $order_id ."' type='button' class='ui-button ui-corner-all ui-widget' onclick='OrderDialog(". $order_id .")' value='Update order'><input id='row_button_cancel_order_". $order_id ."' type='button' class='ui-button ui-corner-all ui-widget' onclick='CancelOrder(". $order_id .")' value='Cancel order'>";
+
 	$response = (object)array("firstname" => $user->firstname, 
 								"order_id" => $order_id,
 								"value" => 0,
 								"order_date" => $date,
 								"order_update" => "0000-00-00 00:00:00",
-								"status" => "Placed");
+								"status" => "Placed",
+								"buttons" => $button
+							);
 	
 	if($statement = $db_con->prepare("INSERT INTO order_product VALUES(?, ?, ?)"))
 	{

@@ -33,7 +33,7 @@
 	</script>
 </head>
 <body>
-
+<div>You are loggin in as <?php echo $user->firstname ?></div><br>
 <table id="view_order_table" class="display" style="width:100%;" style='display:none'>
 	<thead>
 		<tr>
@@ -77,8 +77,18 @@
 			</tr>
 	 	</footer>
 	 </table>
-	<input style='margin-top: 3px;' type='button' class="ui-button ui-corner-all ui-widget" id="place_new_order" onclick='OrderDialog()' value='Place new order'>
-	<input style='margin-top: 3px;' type='button' class="ui-button ui-corner-all ui-widget" id="inventory_button" onclick='' value='Show Inventory'>
+	 <?php
+
+	 if (!$user->admin) {
+	 	echo "<input style='margin-top: 3px;' type='button' class='ui-button ui-corner-all ui-widget' id='place_new_order' onclick='OrderDialog()' value='Place new order'>";
+		echo "<input style='margin-top: 3px;' type='button' class='ui-button ui-corner-all ui-widget' id='inventory_button' onclick='' value='Show Inventory'>";
+	 } else
+	 {
+	 	echo "<input style='margin-top: 3px;' type='button' class='ui-button ui-corner-all ui-widget' id='inventory_button' onclick='' value='Show archived orders'>";
+	 }
+		
+	 ?>
+	
 
 	<div id="inventory" style="display: none">
 		<ul>

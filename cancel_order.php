@@ -8,9 +8,21 @@ if(!isset($_SESSION["user"]))
 
 require("settings.php");
 
-$orderNum = $_POST['order_number'];
+$order_id = $_POST['order'];
+$order_status = $_POST['status'];
 
-$query = "UPDATE user_order SET status_ref = 3 WHERE id = '{$orderNum}'";
-$result = $db_con->query($query);
+// die(json_encode($order_status));
+// canceling order
+if (!$order_status == "Placed")
+{
+	$query = "UPDATE user_order SET status_ref = 3 WHERE id = '{$order_id}'";
+	$result = $db_con->query($query);
+}
+// delivering order
+else /*if status =*delivered*/
+{
+	$query = "UPDATE user_order SET status_ref = 2 WHERE id = '{$order_id}'";
+	$result = $db_con->query($query);
+}
 
-// die(text("success"));
+

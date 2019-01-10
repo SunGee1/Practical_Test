@@ -28,7 +28,7 @@ SET time_zone = "+00:00";
 -- Table structure for table `order_product`
 --
 
-CREATE TABLE `order_product` (
+CREATE TABLE IF NOT EXISTS `order_product` (
   `order_ref` int(11) NOT NULL,
   `product_ref` int(11) NOT NULL,
   `quantity` int(11) NOT NULL
@@ -100,7 +100,7 @@ INSERT INTO `order_product` (`order_ref`, `product_ref`, `quantity`) VALUES
 -- Table structure for table `product`
 --
 
-CREATE TABLE `product` (
+CREATE TABLE IF NOT EXISTS `product` (
   `id` int(11) NOT NULL,
   `description` varchar(200) NOT NULL,
   `cost` decimal(10,0) NOT NULL
@@ -124,7 +124,7 @@ INSERT INTO `product` (`id`, `description`, `cost`) VALUES
 -- Table structure for table `status`
 --
 
-CREATE TABLE `status` (
+CREATE TABLE IF NOT EXISTS `status` (
   `id` int(11) NOT NULL,
   `label` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -146,7 +146,7 @@ INSERT INTO `status` (`id`, `label`) VALUES
 -- Table structure for table `user`
 --
 
-CREATE TABLE `user` (
+CREATE TABLE IF NOT EXISTS `user` (
   `id` int(11) NOT NULL,
   `username` varchar(50) NOT NULL,
   `password` varchar(100) NOT NULL,
@@ -169,7 +169,7 @@ INSERT INTO `user` (`id`, `username`, `password`, `firstname`, `surname`, `admin
 -- Table structure for table `user_inventory`
 --
 
-CREATE TABLE `user_inventory` (
+CREATE TABLE IF NOT EXISTS `user_inventory` (
   `item_id` int(11) NOT NULL,
   `inv_user_ref` int(11) NOT NULL,
   `item_name` int(11) NOT NULL,
@@ -182,7 +182,7 @@ CREATE TABLE `user_inventory` (
 -- Table structure for table `user_order`
 --
 
-CREATE TABLE `user_order` (
+CREATE TABLE IF NOT EXISTS `user_order` (
   `id` int(11) NOT NULL,
   `user_ref` int(11) NOT NULL,
   `order_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,

@@ -7,43 +7,47 @@ $(document).ready( function () {
 
 function ViewOrdersTable ()
 {
+
+						console.log("i am in view orders table");
 	$.ajax(
+	{
+		url : "view_table.php",
+		dataType : "JSON",
+		success : function(rows)
 		{
-			url : "view_table.php",
-			dataType : "JSON",
-			success : function(rows)
+			if(!table)
 			{
-				if(!table)
+				table = $('#view_order_table').DataTable(
 				{
-					table = $('#view_order_table').DataTable(
-					{
-						dom: 'Bfrtip',
-	    				buttons: 
-	    				[
-	            			'copy', 'csv', 'excel', 'pdf', 'print'
-	        			]
-        			});
-				}
-				// Find and remove all rows greater then row one in view_order_table
-				// $("#view_order_table").find("tr:gt(0)").remove();
-				table.clear();
-				// rebuild table
-				for (index = 0; index < rows.length; ++index) {
-					var  order = {firstname: rows[index].firstname,
-									order_id: rows[index].id,
-									value: rows[index].Value,
-									order_date: rows[index].order_date,
-									order_update: rows[index].order_update,
-									status: rows[index].Status
-					};
-					AddOrderToTable(order);
-				};
-			},
-			error : function(jqXHR, textStatus, errorThrown)
-			{
-				console.log(textStatus, errorThrown);
+					dom: 'Bfrtip',
+    				buttons: 
+    				[
+            			'copy', 'csv', 'excel', 'pdf', 'print'
+        			]
+    			});
 			}
-		});
+			// Find and remove all rows greater then row one in view_order_table
+			// $("#view_order_table").find("tr:gt(0)").remove();
+			table.clear();
+			// rebuild table
+			var  order = {};
+			for (index = 0; index < rows.length; ++index) {
+						order = {firstname: rows[index].firstname,
+								order_id: rows[index].id,
+								value: rows[index].Value,
+								order_date: rows[index].order_date,
+								order_update: rows[index].order_update,
+								status: rows[index].Status,
+								buttons: rows[index].buttons
+				};
+				AddOrderToTable(order);
+			};
+		},
+		error : function(jqXHR, textStatus, errorThrown)
+		{
+			console.log(textStatus, errorThrown);
+		}
+	});
 }
 
 function OrderDialog (order_number = false)
@@ -131,7 +135,7 @@ function PlaceOrder ()
 
 	if (count != 0)
 	{
-		console.log(products);
+		// console.log(products);
 		count = 0;
 		$.ajax(
 		{
@@ -141,6 +145,8 @@ function PlaceOrder ()
 			type : 'POST',
 			success : function(result)
 			{
+				console.log(result);
+				result.items = products;
 				AddOrderToTable(result);
 				$("#place_order_table").dialog('close');
 			},
@@ -156,7 +162,7 @@ function PlaceOrder ()
 	}
 }
 
-function CancelOrder(orderNum)
+function CancelOrder(order_id, order_status)
 {
 	$('#error_dialog').html("Do you really want to cancel the order?");
 	$('#error_dialog').dialog
@@ -172,8 +178,8 @@ function CancelOrder(orderNum)
 				$.ajax(
 				{
 					url : "cancel_order.php",
-					data : {order_number: orderNum},
-					dataType : "text",
+					data : {order: order_id, status: order_status},
+					// dataType : "json",
 					type : 'POST',
 					success : function(success)
 					{
@@ -280,10 +286,50 @@ function UpdateRow(result)
 	// console.log(result);
 }
 
-function AddOrderToTable(order)
+// function GetButtons(orderNum)
+// {
+// 	$.ajax(
+// 	{
+// 		url : "get_buttons.php",
+// 		data : {order_number: orderNum},
+// 		dataType : "json",
+// 		type : 'POST',
+// 		// async: !1,
+// 		success : function(result)
+// 		{
+// 			row_buttons = result.button;
+// 		},
+//         error : function(jqXHR, textStatus, errorThrown)
+//         {
+//             console.log(textStatus, errorThrown);
+//         }
+// 	});
+// }
+
+function DeliverOrder(order_id, order_status)
 {
-	var buttons = "";
+	$.ajax(
+	{
+		url : "cancel_order.php",
+		data : {order: order_id, status: order_status},
+		// dataType : "json",
+		type : 'POST',
+		success : function(success)
+		{
+			ViewOrdersTable();
+		},
+        error : function(jqXHR, textStatus, errorThrown)
+        {
+            console.log(textStatus, errorThrown);
+        }
+	});
+}
+
+function  AddOrderToTable(order)
+{
+	// var buttons = "";
 	var status = "";
+	// var items = null;
 
 	if(!table)
 	{
@@ -297,35 +343,38 @@ function AddOrderToTable(order)
 		});
 	}
 
+	// GetButtons(order);
+
 	if (order.status == "Placed") /*Placed*/
 	{
-		buttons = "<input id='row_button_update_order_"+order.order_id+"' type='button' class='ui-button ui-corner-all ui-widget' onclick='OrderDialog("+order.order_id+")' value='Update order'><input id='row_button_cancel_order_"+order.order_id+"' type='button' class='ui-button ui-corner-all ui-widget' onclick='CancelOrder("+order.order_id+")' value='Cancel order'>";
+		// buttons = "<input id='row_button_update_order_"+order.order_id+"' type='button' class='ui-button ui-corner-all ui-widget' onclick='OrderDialog("+order.order_id+")' value='Update order'><input id='row_button_cancel_order_"+order.order_id+"' type='button' class='ui-button ui-corner-all ui-widget' onclick='CancelOrder("+order.order_id+")' value='Cancel order'>";
 		status = "<font color='blue'>"+order.status+"</font>";
 	} else if (order.status == "Delivered") /*Delivered*/
 	{
-		buttons = "<input id='row_button_collect_order_"+order.order_id+"' type='button' class='ui-button ui-corner-all ui-widget' onclick='CollectOrder("+order.order_id+")' value='Collect order'>";
+		// buttons = "<input id='row_button_collect_order_"+order.order_id+"' type='button' class='ui-button ui-corner-all ui-widget' onclick='CollectOrder("+order.order_id+")' value='Collect order'>";
 		status = "<font color='green'>"+order.status+"</font>";
 	} else if (order.status == "Canceled") /*Canceled*/
 	{
-		buttons = "";
+		// buttons = "";
 		status = "<font color='red'>"+order.status+"</font>";
 	} else /*Collected, Archived*/
 	{
-		buttons = "";
+		// buttons = "";
 		status = order.status;
 	}
+
+	// items = GetProductNames(order.order_id);
 	
 	table.row.add([
 					order.firstname,
-					order.order_id,
+					"<div title='"+order.items+"'><font color='purple'>"+order.order_id+"</font></div>",
 					"R" + order.value + ".00",
 					order.order_date,
 					order.order_update,
-					// <font color="red">This is some text!</font>
 					status,
-					buttons
+					order.buttons
+					// row_buttons
 				]).draw();
-	// console.log(order.status);
 }
 
 function ShowInventory()
@@ -368,7 +417,7 @@ function ShowInventory()
 		});
 	// } else
 	// {
-	// 	console.log("You have no items in you inventory");
+	// 	console.log("You have no items in your inventory");
 	// }
 }
 

@@ -3,6 +3,8 @@
 	
 	session_start();
 	
+	header("Content-Type: application/json");
+
 	if(!isset($_SESSION["user"]))
 	{
 		header("Location: login.php");
@@ -35,10 +37,61 @@
 
 	$rows = [];
 
-	while($row = mysqli_fetch_array($result))
+	while($row = mysqli_fetch_object($result))
 	{
-		array_push($rows, $row);
+		$row->buttons = GetButtons($row);
+		$rows[] = $row;
+		// array_push($rows, $row);
 	}
 
 	die(json_encode($rows));
+
+	function GetButtons($order)
+	{
+		global $user;
+		$button = "";
+		if ($order->Status == "Placed")
+		{
+			if ($user->admin)
+			{
+				$button = "<input id='row_button_deliver_order_". $order->id ."' type='button' class='ui-button ui-corner-all ui-widget' onclick='DeliverOrder(". $order->id ."," . $order->status .")' value='Deliver order'>";
+			} else
+			{
+		// die(json_encode("wwww"));
+				$button = "<input id='row_button_update_order_". $order->id ."' type='button' class='ui-button ui-corner-all ui-widget' onclick='OrderDialog(". $order->id .")' value='Update order'><input id='row_button_cancel_order_". $order->id ."' type='button' class='ui-button ui-corner-all ui-widget' onclick='CancelOrder(". $order->id .",". $order->status .")' value='Cancel order'>";
+				// $buttons = "wwwwwwwww";
+			}
+		} else if ($order->Status == "Delivered")
+		{
+			if ($user->admin)
+			{	
+				$button = "";
+			} else
+			{
+				$button = "<input id='row_button_collect_order_". $order->id ."' type='button' class='ui-button ui-corner-all ui-widget' onclick='CollectOrder(". $order->id .")' value='Collect order'>";
+			}
+		} else if ($order->Status == "Canceled")
+		{
+			if ($user->admin)
+			{
+				$button = "<input id='row_button_delete_order_". $order->id ."' type='button' class='ui-button ui-corner-all ui-widget' onclick='DeleteOrder(". $order->id .")' value='Delete order'>";
+			} else
+			{
+				$button = "";
+			}
+		} else if ($order->Status == "Collected")
+		{
+			if ($user->admin)
+			{
+				$button = "<input id='row_button_archive_order_". $order->id ."' type='button' class='ui-button ui-corner-all ui-widget' onclick='ArchiveOrder(". $order->id .")' value='Archive order'>";
+			} else
+			{
+				$button = "";
+			}
+		} else /*if $order->Status == Archived*/
+		{
+			$button = "";
+		}
+		return $button;
+	}
 ?>
