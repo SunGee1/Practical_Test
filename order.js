@@ -8,7 +8,7 @@ $(document).ready( function () {
 function ViewOrdersTable ()
 {
 
-						console.log("i am in view orders table");
+	console.log("i am in view orders table");
 	$.ajax(
 	{
 		url : "view_table.php",
@@ -162,12 +162,38 @@ function PlaceOrder ()
 	}
 }
 
-function CancelOrder(order_id, order_status)
+function Logout()
 {
-	$('#error_dialog').html("Do you really want to cancel the order?");
+	$.ajax(
+	{
+		url : "logout.php",
+		// data : session_user,
+		// dataType : "json",
+		type : 'POST',
+		success : function(success)
+		{
+			// add code here to update table row only, live.
+			// ViewOrdersTable();
+		},
+        error : function(jqXHR, textStatus, errorThrown)
+        {
+            console.log(textStatus, errorThrown);
+        }
+	});
+}
+
+function StatusUpdate(order_id, order_status, is_admin)
+{	
+	if (!is_admin)
+	{
+		$('#error_dialog').html("Do you really want to cancel order " + order_id + "?");
+	} else
+	{	
+		$('#error_dialog').html("Please confirm delivery to client.");
+	}
 	$('#error_dialog').dialog
 	({
-		title: "Notice",
+		title: "Confirmation",
 		modal: true,
 		height: "auto",
 		width: "auto",
@@ -177,8 +203,8 @@ function CancelOrder(order_id, order_status)
 			{
 				$.ajax(
 				{
-					url : "cancel_order.php",
-					data : {order: order_id, status: order_status},
+					url : "status_update.php",
+					data : {order: order_id, status: order_status, admin: is_admin},
 					// dataType : "json",
 					type : 'POST',
 					success : function(success)
@@ -203,35 +229,62 @@ function CancelOrder(order_id, order_status)
 
 function PopulateUpdateOrderTable(orderNum)
 {
-		$.ajax(
+	$.ajax(
+	{
+		url : "get_order_details.php",
+		data : {orderNum: orderNum}, 
+		dataType : "json",
+		type : "POST",
+		success : function(result)
 		{
-			url : "get_order_details.php",
-			data : {orderNum: orderNum}, 
-			dataType : "json",
-			type : "POST",
-			success : function(result)
+			$("#update_order_button").find("input").attr("onclick", "UpdateOrder("+ orderNum +")");
+			ClearOrderForm();
+			for (rowIndex = 0; rowIndex < result.length; ++rowIndex)
 			{
-				$("#update_order_button").find("input").attr("onclick", "UpdateOrder("+ orderNum +")");
-				ClearOrderForm();
-				for (rowIndex = 0; rowIndex < result.length; ++rowIndex)
+				$('.order_product').each(function()
 				{
-					$('.order_product').each(function()
+					var productID = $(this).attr("id");
+					if(productID == result[rowIndex].product_ref)
 					{
-						var productID = $(this).attr("id");
-						if(productID == result[rowIndex].product_ref)
-						{
-							$(this).val(result[rowIndex].quantity);
-							return;
-						}
-					});
+						$(this).val(result[rowIndex].quantity);
+						return;
+					}
+				});
 
-				};
-			},
-			error : function(jqXHR, textStatus, errorThrown)
-			{
-				console.log(textStatus, errorThrown);
+			};
+		},
+		error : function(jqXHR, textStatus, errorThrown)
+		{
+			console.log(textStatus, errorThrown);
+		}
+	});
+}
+
+function CollectOrder(orderNum)
+{
+	$.ajax(
+	{
+		url : "collect_order.php",
+		data : {orderNum: orderNum}, 
+		dataType : "json",
+		type : "POST",
+		success : function(result)
+		{
+			for (var i = 0; i <= result.length - 1; i++) {
+				console.log(result[i].product_ref);
+				console.log(result[i].quantity);
 			}
-		});
+			// $("#update_order_button").find("input").attr("onclick", "UpdateOrder("+ orderNum +")");
+
+			
+
+
+		},
+		error : function(jqXHR, textStatus, errorThrown)
+		{
+			console.log(textStatus, errorThrown);
+		}
+	});
 }
 
 function ClearOrderForm()
@@ -286,45 +339,6 @@ function UpdateRow(result)
 	// console.log(result);
 }
 
-// function GetButtons(orderNum)
-// {
-// 	$.ajax(
-// 	{
-// 		url : "get_buttons.php",
-// 		data : {order_number: orderNum},
-// 		dataType : "json",
-// 		type : 'POST',
-// 		// async: !1,
-// 		success : function(result)
-// 		{
-// 			row_buttons = result.button;
-// 		},
-//         error : function(jqXHR, textStatus, errorThrown)
-//         {
-//             console.log(textStatus, errorThrown);
-//         }
-// 	});
-// }
-
-function DeliverOrder(order_id, order_status)
-{
-	$.ajax(
-	{
-		url : "cancel_order.php",
-		data : {order: order_id, status: order_status},
-		// dataType : "json",
-		type : 'POST',
-		success : function(success)
-		{
-			ViewOrdersTable();
-		},
-        error : function(jqXHR, textStatus, errorThrown)
-        {
-            console.log(textStatus, errorThrown);
-        }
-	});
-}
-
 function  AddOrderToTable(order)
 {
 	// var buttons = "";
@@ -347,7 +361,7 @@ function  AddOrderToTable(order)
 
 	if (order.status == "Placed") /*Placed*/
 	{
-		// buttons = "<input id='row_button_update_order_"+order.order_id+"' type='button' class='ui-button ui-corner-all ui-widget' onclick='OrderDialog("+order.order_id+")' value='Update order'><input id='row_button_cancel_order_"+order.order_id+"' type='button' class='ui-button ui-corner-all ui-widget' onclick='CancelOrder("+order.order_id+")' value='Cancel order'>";
+		// buttons = "<input id='row_button_update_order_"+order.order_id+"' type='button' class='ui-button ui-corner-all ui-widget' onclick='OrderDialog("+order.order_id+")' value='Update order'><input id='row_button_cancel_order_"+order.order_id+"' type='button' class='ui-button ui-corner-all ui-widget' onclick='StatusUpdate("+order.order_id+")' value='Cancel order'>";
 		status = "<font color='blue'>"+order.status+"</font>";
 	} else if (order.status == "Delivered") /*Delivered*/
 	{
@@ -389,15 +403,16 @@ function ShowInventory()
 			// type : 'POST',
 			success : function(result)
 			{
-				$("#inventory ul").each(function()
-					{
-						append(result);
+				// $("#inventory ul").each(function()
+					// {
+						// append(result);
+						console.log(result);
 						
-					});
+					// });
 
 				$('#inventory').dialog
 				({
-					title: result.firstname + "'s Inventory",
+					title:  "My Inventory",
 					modal: true,
 					height: "auto",
 					width: "auto",

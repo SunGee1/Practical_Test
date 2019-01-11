@@ -34,6 +34,9 @@
 </head>
 <body>
 <div>You are loggin in as <?php echo $user->firstname ?></div><br>
+<form method="get" action="logout.php">
+    <button type="submit">Logout</button>
+</form>
 <table id="view_order_table" class="display" style="width:100%;" style='display:none'>
 	<thead>
 		<tr>
@@ -81,7 +84,7 @@
 
 	 if (!$user->admin) {
 	 	echo "<input style='margin-top: 3px;' type='button' class='ui-button ui-corner-all ui-widget' id='place_new_order' onclick='OrderDialog()' value='Place new order'>";
-		echo "<input style='margin-top: 3px;' type='button' class='ui-button ui-corner-all ui-widget' id='inventory_button' onclick='' value='Show Inventory'>";
+		echo "<input style='margin-top: 3px;' type='button' class='ui-button ui-corner-all ui-widget' id='inventory_button' onclick='ShowInventory()' value='Show Inventory'>";
 	 } else
 	 {
 	 	echo "<input style='margin-top: 3px;' type='button' class='ui-button ui-corner-all ui-widget' id='inventory_button' onclick='' value='Show archived orders'>";
@@ -91,8 +94,13 @@
 	
 
 	<div id="inventory" style="display: none">
-		<ul>
-		</ul>
+		<table>
+			<header>
+				<tr>
+					<td></td>
+				</tr>
+			</header>
+		</table>
 		<input type="button" name="eat" value="Eat">
 		<input type="button" name="chuck" value="Chuck">
 	</div>

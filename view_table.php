@@ -54,11 +54,12 @@
 		{
 			if ($user->admin)
 			{
-				$button = "<input id='row_button_deliver_order_". $order->id ."' type='button' class='ui-button ui-corner-all ui-widget' onclick='DeliverOrder(". $order->id ."," . $order->status .")' value='Deliver order'>";
+				$button = "<input id='row_button_deliver_order_". $order->id ."' type='button' class='ui-button ui-corner-all ui-widget'
+				onclick='StatusUpdate(". $order->id .",\"". $order->Status ."\",". $user->admin .")' value='Deliver order'>";
 			} else
 			{
 		// die(json_encode("wwww"));
-				$button = "<input id='row_button_update_order_". $order->id ."' type='button' class='ui-button ui-corner-all ui-widget' onclick='OrderDialog(". $order->id .")' value='Update order'><input id='row_button_cancel_order_". $order->id ."' type='button' class='ui-button ui-corner-all ui-widget' onclick='CancelOrder(". $order->id .",". $order->status .")' value='Cancel order'>";
+				$button = "<input id='row_button_update_order_". $order->id ."' type='button' class='ui-button ui-corner-all ui-widget' onclick='OrderDialog(". $order->id .")' value='Update order'><input id='row_button_cancel_order_". $order->id ."' type='button' class='ui-button ui-corner-all ui-widget' onclick='StatusUpdate(". $order->id .",\"". $order->Status ."\",false)' value='Cancel order'>";
 				// $buttons = "wwwwwwwww";
 			}
 		} else if ($order->Status == "Delivered")
