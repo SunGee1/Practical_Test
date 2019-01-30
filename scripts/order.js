@@ -266,14 +266,14 @@ function CollectOrder(orderNum)
 	{
 		url : "collect_order.php",
 		data : {orderNum: orderNum}, 
-		dataType : "json",
+		// dataType : "json",
 		type : "POST",
 		success : function(result)
 		{
-			for (var i = 0; i <= result.length - 1; i++) {
-				console.log(result[i].product_ref);
-				console.log(result[i].quantity);
-			}
+			// for (var i = 0; i <= result.length - 1; i++) {
+			// 	console.log(result[i].product_ref);
+			// 	console.log(result[i].quantity);
+			// }
 			// $("#update_order_button").find("input").attr("onclick", "UpdateOrder("+ orderNum +")");
 
 			

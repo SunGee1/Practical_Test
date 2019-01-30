@@ -9,8 +9,8 @@
 	require("settings.php");
 	$user = $_SESSION["user"];
 
-	// echo $user->firstname;
-
+	$name = $user->firstname;
+	$isAdmin = $user->admin ? " - Admin user" : " - Basic user" ;
 	
 	$db_con = new mysqli($db_hostname, $db_username, $db_password, $db_database);
 	$query = "SELECT * FROM product";
@@ -21,19 +21,19 @@
 <html>
 <head>
 	</script>
-		<script src="jquery-3.3.1.min.js"></script>
-		<script src="order.js"></script>
+		<script src="scripts/jquery-3.3.1.min.js"></script>
+		<script src="scripts/order.js"></script>
 
 		<link rel="stylesheet" type="text/css" href="DataTables/datatables.min.css"/>
 		<script type="text/javascript" src="DataTables/datatables.min.js"></script>
 		
 		<!-- <link rel="stylesheet" href="jquery.css"> -->
  		<link type="text/css" href="jquery-ui-1.12.1.custom/jquery-ui.min.css" rel="stylesheet" />
-		<link rel="stylesheet" href="button_styles.css">
+		<link rel="stylesheet" href="scripts/button_styles.css">
 	</script>
 </head>
 <body>
-<div>You are loggin in as <?php echo $user->firstname ?></div><br>
+<div>You are loggin in as <?php echo $name.$isAdmin ?></div><br>
 <form method="get" action="logout.php">
     <button type="submit">Logout</button>
 </form>
