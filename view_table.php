@@ -29,7 +29,7 @@
 			LEFT JOIN user u ON u.id = uo.user_ref
 			LEFT JOIN order_product op ON op.order_ref = uo.id
 			LEFT JOIN product p ON p.id = op.product_ref
-			WHERE u.id = {$user->id}
+			WHERE u.id = {$user->id} AND s.label != 4 AND s.label != 5
 			GROUP BY uo.id";
 	}
 
