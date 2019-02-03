@@ -78,8 +78,8 @@ if(isset($_POST["username"]) && isset($_POST["password"]))
 <!DOCTYPE html>
 <html>
 	<head>
-		<link rel="stylesheet" href="styles.css">
-		<script src="jquery-3.3.1.min.js"></script>
+		<link rel="stylesheet" href="scripts/styles.css">
+		<script src="scripts/jquery-3.3.1.min.js"></script>
 	</head>
 	<body>
 		<div class="login-page">

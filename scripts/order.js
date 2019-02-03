@@ -385,22 +385,27 @@ function  AddOrderToTable(order)
 
 function ShowInventory()
 {
-	// if (!"inventory is empty")
-	// {
+	if (true)
+	{
+		$('#inventory tbody').empty();
 		$.ajax(
 		{
 			url : "get_inventory_items.php",
-			// data : {order_number: orderNum, products: product_quantities},
 			dataType : "json",
-			// type : 'POST',
 			success : function(result)
 			{
-				// $("#inventory ul").each(function()
-					// {
-						// append(result);
-						console.log(result);
+				var count = 0;
+				$(result).each(function()
+					{
+						var row = "<td style='text-align:left'>" + result[count].description + "</td>";
+						row += "<td style='text-align:left'>" + result[count].item_quantity + "</td>";
+						row += "<td style='text-align:left'><input type='button' id='eat' class='ui-button ui-corner-all ui-widget' onclick='' value='Eat'></input></td>";
+						row += "<td style='text-align:left'><input type='button' id='sell' class='ui-button ui-corner-all ui-widget' onclick='' value='Sell'></input></td>";
+
+						$('#inventory').find('tbody:last').append('<tr>' + row + '</tr>');
+						count++;
 						
-					// });
+					});
 
 				$('#inventory').dialog
 				({
@@ -422,10 +427,10 @@ function ShowInventory()
 	            console.log(textStatus, errorThrown);
 	        }
 		});
-	// } else
-	// {
-	// 	console.log("You have no items in your inventory");
-	// }
+	} else
+	{
+		alert("You have no items in your inventory");
+	}
 }
 
 

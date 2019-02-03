@@ -72,7 +72,7 @@
 				echo "</tr>";
 			}
 		?>
-		</body>
+		</tbody>
 	 	<footer>
 			<tr>
 				<td id='place_order_button'><input class="ui-button ui-corner-all ui-widget" type='button' onclick='PlaceOrder()' value='Place order' ></td>
@@ -95,14 +95,29 @@
 
 	<div id="inventory" style="display: none">
 		<table>
-			<header>
+			<thead>
 				<tr>
-					<td></td>
+					<th style='text-align:left; width:150px'>Item</th>
+					<th style='text-align:right'>Quantity</th>
+					<th style='text-align:right'>Action</th>
 				</tr>
-			</header>
+			</thead>
+			<tbody>
+				<tr>
+					
+				</tr>
+				<tr>
+					
+				</tr>
+			</tbody>
+			<tfooter>
+				<tr>
+					
+				</tr>
+			</tfooter>
 		</table>
-		<input type="button" name="eat" value="Eat">
-		<input type="button" name="chuck" value="Chuck">
+		<!-- <input type="button" name="eat" value="Eat">
+		<input type="button" name="sell" value="Sell"> -->
 	</div>
 
 	<!-- ----- temp code that needs to be moved to its own file ----- -->
