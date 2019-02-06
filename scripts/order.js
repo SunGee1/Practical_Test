@@ -8,7 +8,6 @@ $(document).ready( function () {
 function ViewOrdersTable ()
 {
 
-	console.log("i am in view orders table");
 	$.ajax(
 	{
 		url : "view_table.php",
@@ -29,7 +28,10 @@ function ViewOrdersTable ()
 			// Find and remove all rows greater then row one in view_order_table
 			// $("#view_order_table").find("tr:gt(0)").remove();
 			table.clear();
+			// console.log(table);
 			// rebuild table
+			// console.log("in vieworderstable");
+			// console.log(rows);
 			var  order = {};
 			for (index = 0; index < rows.length; ++index) {
 						order = {firstname: rows[index].firstname,
@@ -40,7 +42,23 @@ function ViewOrdersTable ()
 								status: rows[index].Status,
 								buttons: rows[index].buttons
 				};
-				AddOrderToTable(order);
+					// console.log(typeof(rows))
+					// console.log(rows);
+					// console.log(rows.size())
+				if (rows != null || rows != "")
+				{
+					// console.log("something in database");
+					AddOrderToTable(order);
+
+					// die("sssss");
+				}
+				else
+				{
+					// console.log(rows)
+					console.log("nothing in database");
+					die("sssss");
+					// table.draw();
+				}
 			};
 		},
 		error : function(jqXHR, textStatus, errorThrown)
@@ -220,6 +238,44 @@ function StatusUpdate(order_id, order_status, is_admin)
     	    	$(this).dialog('close');
 			},
 			"No": function()
+			{
+    	    	$(this).dialog('close');
+			}
+		}
+	});
+}
+
+function DeleteOrder(order_num)
+{
+	$('#error_dialog').html("Please confirm the deletion of order " + order_num + ".");
+	$('#error_dialog').dialog
+	({
+		title: "Confirmation",
+		modal: true,
+		height: "auto",
+		width: "auto",
+		buttons:
+		{
+			"Delete": function()
+			{
+				$.ajax(
+				{
+					url : "delete_order.php",
+					data : {orderNum: order_num},
+					type : "POST",
+					success : function()
+					{
+						ViewOrdersTable();
+						alert("order " + order_num + " has been deleted.");
+					},
+					error : function(jqXHR, textStatus, errorThrown)
+					{
+						console.log(textStatus, errorThrown);
+					}
+				});
+    	    	$(this).dialog('close');
+			},
+			"Cancel": function()
 			{
     	    	$(this).dialog('close');
 			}
@@ -433,6 +489,25 @@ function ShowInventory()
 	}
 }
 
+function ArchiveOrder(order_num)
+{
+	console.log("order number " + order_num + " has been archived");
+	$.ajax(
+		{
+			url : "archive_order.php",
+			data : {orderNum : order_num},
+			type : "POST",
+			success : function(result)
+			{
+				ViewOrdersTable();
+				alert("Order number " + order_num + " has been archived.");
+			},
+	        error : function(jqXHR, textStatus, errorThrown)
+	        {
+	            console.log(textStatus, errorThrown);
+	        }
+	    });
+}
 
 function ErrorDialog(dialog_title, error_message)
 {

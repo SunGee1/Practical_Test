@@ -29,7 +29,7 @@
 			LEFT JOIN user u ON u.id = uo.user_ref
 			LEFT JOIN order_product op ON op.order_ref = uo.id
 			LEFT JOIN product p ON p.id = op.product_ref
-			WHERE u.id = {$user->id} AND s.label != 4 AND s.label != 5
+			WHERE u.id = {$user->id} AND s.id != 4 AND s.id != 5
 			GROUP BY uo.id";
 	}
 
@@ -41,10 +41,8 @@
 	{
 		$row->buttons = GetButtons($row);
 		$rows[] = $row;
-		// array_push($rows, $row);
 	}
 
-	die(json_encode($rows));
 
 	function GetButtons($order)
 	{
@@ -58,9 +56,7 @@
 				onclick='StatusUpdate(". $order->id .",\"". $order->Status ."\",". $user->admin .")' value='Deliver order'>";
 			} else
 			{
-		// die(json_encode("wwww"));
 				$button = "<input id='row_button_update_order_". $order->id ."' type='button' class='ui-button ui-corner-all ui-widget' onclick='OrderDialog(". $order->id .")' value='Update order'><input id='row_button_cancel_order_". $order->id ."' type='button' class='ui-button ui-corner-all ui-widget' onclick='StatusUpdate(". $order->id .",\"". $order->Status ."\",false)' value='Cancel order'>";
-				// $buttons = "wwwwwwwww";
 			}
 		} else if ($order->Status == "Delivered")
 		{
@@ -82,17 +78,20 @@
 			}
 		} else if ($order->Status == "Collected")
 		{
-			if ($user->admin)
-			{
+			// if ($user->admin)
+			// {
 				$button = "<input id='row_button_archive_order_". $order->id ."' type='button' class='ui-button ui-corner-all ui-widget' onclick='ArchiveOrder(". $order->id .")' value='Archive order'>";
-			} else
-			{
-				$button = "";
-			}
-		} else /*if $order->Status == Archived*/
+			// } else
+			// {
+			// 	$button = "";
+			// }
+		}else
 		{
 			$button = "";
 		}
+		
 		return $button;
 	}
+	
+	die(json_encode($rows));
 ?>
