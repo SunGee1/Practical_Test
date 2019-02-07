@@ -87,7 +87,7 @@
 		echo "<input style='margin-top: 3px;' type='button' class='ui-button ui-corner-all ui-widget' id='inventory_button' onclick='ShowInventory()' value='Show Inventory'>";
 	 } else
 	 {
-	 	echo "<input style='margin-top: 3px;' type='button' class='ui-button ui-corner-all ui-widget' id='inventory_button' onclick='' value='Show archived orders'>";
+	 	echo "<input style='margin-top: 3px;' type='button' class='ui-button ui-corner-all ui-widget' id='inventory_button' onclick='GetArchivedOrders()' value='Show archived orders'>";
 	 }
 		
 	 ?>
@@ -116,8 +116,32 @@
 				</tr>
 			</tfooter>
 		</table>
-		<!-- <input type="button" name="eat" value="Eat">
-		<input type="button" name="sell" value="Sell"> -->
+	</div>
+
+	<div id="archive" style="display: none">
+		<table>
+			<thead>
+				<tr>
+					<th style='text-align:left; width:150px'>Order Number</th>
+					<th style='text-align:right'>User</th>
+					<th style='text-align:right'>Date Order Placed</th>
+					<th style='text-align:right'>Date Order Archived</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					
+				</tr>
+				<tr>
+					
+				</tr>
+			</tbody>
+			<tfooter>
+				<tr>
+					
+				</tr>
+			</tfooter>
+		</table>
 	</div>
 
 	<!-- ----- temp code that needs to be moved to its own file ----- -->

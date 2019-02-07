@@ -501,6 +501,52 @@ function ArchiveOrder(order_num)
 	    });
 }
 
+function GetArchivedOrders()
+{
+	$('#archive tbody').empty();
+	$.ajax(
+	{
+		url : "get_archived_orders.php",
+		// data : {orderNum : order_num},
+		// type : "POST",
+		dataType : "json",
+		success : function(result)
+		{
+			var count = 0;
+			$(result).each(function()
+				{
+					var row = "<td style='text-align:left'>" + result[count].order_num + "</td>";
+					row += "<td style='text-align:left'>" + result[count].Name + "</td>";
+					row += "<td style='text-align:left'>" + result[count].date_order_placed + "</td>";
+					row += "<td style='text-align:left'>" + result[count].date_order_archived + "</td>";
+
+					$('#archive').find('tbody:last').append('<tr>' + row + '</tr>');
+					count++;
+					
+				});
+
+			$('#archive').dialog
+			({
+				title:  "Archived Orders",
+				modal: true,
+				height: "auto",
+				width: "auto",
+				buttons:
+				{
+					"Close": function()
+					{
+						$(this).dialog('close');
+					}
+				}
+			});
+		},
+        error : function(jqXHR, textStatus, errorThrown)
+        {
+            console.log(textStatus, errorThrown);
+        }
+    });
+}
+
 function ErrorDialog(dialog_title, error_message)
 {
 	$('#error_dialog').html(error_message);
