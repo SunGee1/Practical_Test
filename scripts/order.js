@@ -7,7 +7,6 @@ $(document).ready( function () {
 
 function ViewOrdersTable ()
 {
-
 	$.ajax(
 	{
 		url : "view_table.php",
@@ -25,47 +24,45 @@ function ViewOrdersTable ()
         			]
     			});
 			}
-			// Find and remove all rows greater then row one in view_order_table
-			// $("#view_order_table").find("tr:gt(0)").remove();
-			table.clear();
-			// console.log(table);
-			// rebuild table
-			// console.log("in vieworderstable");
-			// console.log(rows);
-			var  order = {};
-			for (index = 0; index < rows.length; ++index) {
-						order = {firstname: rows[index].firstname,
-								order_id: rows[index].id,
-								value: rows[index].Value,
-								order_date: rows[index].order_date,
-								order_update: rows[index].order_update,
-								status: rows[index].Status,
-								buttons: rows[index].buttons
-				};
-					// console.log(typeof(rows))
-					// console.log(rows);
-					// console.log(rows.size())
-				if (rows != null || rows != "")
+			table.clear().draw();
+			var order = {};
+			if (isEmpty(rows))
+			{
+				for (index = 0; index < rows.length; ++index)
 				{
-					// console.log("something in database");
+					order = {firstname: rows[index].firstname,
+							order_id: rows[index].id,
+							value: rows[index].Value,
+							order_date: rows[index].order_date,
+							order_update: rows[index].order_update,
+							status: rows[index].Status,
+							buttons: rows[index].buttons
+							};
 					AddOrderToTable(order);
-
-					// die("sssss");
 				}
-				else
-				{
-					// console.log(rows)
-					console.log("nothing in database");
-					die("sssss");
-					// table.draw();
-				}
-			};
+			}
+			else
+			{
+				table.clear().draw();
+			}
 		},
 		error : function(jqXHR, textStatus, errorThrown)
 		{
 			console.log(textStatus, errorThrown);
 		}
 	});
+}
+
+function isEmpty(obj)
+{
+	for (var key in obj)
+	{
+		if (obj.hasOwnProperty(key))
+		{
+			return true;
+		}
+		return false;
+	}
 }
 
 function OrderDialog (order_number = false)
@@ -150,10 +147,9 @@ function PlaceOrder ()
 		products.push({product_id: $(this).attr("id"), product_cost: $(this).attr("cost"), product_quantity: $(this).val()});
 		$(this).val("");
 	});
-
+	
 	if (count != 0)
 	{
-		// console.log(products);
 		count = 0;
 		$.ajax(
 		{
@@ -163,7 +159,6 @@ function PlaceOrder ()
 			type : 'POST',
 			success : function(result)
 			{
-				console.log(result);
 				result.items = products;
 				AddOrderToTable(result);
 				$("#place_order_table").dialog('close');
@@ -266,7 +261,6 @@ function DeleteOrder(order_num)
 					success : function()
 					{
 						ViewOrdersTable();
-						alert("order " + order_num + " has been deleted.");
 					},
 					error : function(jqXHR, textStatus, errorThrown)
 					{
@@ -491,7 +485,6 @@ function ShowInventory()
 
 function ArchiveOrder(order_num)
 {
-	console.log("order number " + order_num + " has been archived");
 	$.ajax(
 		{
 			url : "archive_order.php",
@@ -500,7 +493,6 @@ function ArchiveOrder(order_num)
 			success : function(result)
 			{
 				ViewOrdersTable();
-				alert("Order number " + order_num + " has been archived.");
 			},
 	        error : function(jqXHR, textStatus, errorThrown)
 	        {

@@ -17,14 +17,13 @@ $result = $db_con->query($query);
 $query = "SELECT (order_date) FROM user_order WHERE id = {$order_id}";
 $result = $db_con->query($query);
 
-mysqli_error($db_con);
 $row = mysqli_fetch_assoc($result);
-// var_dump($row["order_date"]);
-$date = $row['order_date'];
+// $date = $row['order_date'];
+
 $statement = $db_con->prepare("INSERT INTO archive (order_num, user_ref, date_order_placed) VALUES (?, ?, ?)");
-$statement->bind_param("iis", $order_id, $user->id, $date);
+$statement->bind_param("iis", $order_id, $user->id, $row['order_date']);
 $statement->execute();
-// die();
+
 $query = "DELETE FROM user_order WHERE id = {$order_id}";
 $result = $db_con->query($query);
 
