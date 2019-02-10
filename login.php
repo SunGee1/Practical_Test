@@ -80,6 +80,11 @@ if(isset($_POST["username"]) && isset($_POST["password"]))
 	<head>
 		<link rel="stylesheet" href="scripts/styles.css">
 		<script src="scripts/jquery-3.3.1.min.js"></script>
+
+		<!-- <script src="scripts/jquery-3.3.1.min.js"></script> -->
+		<!-- <script src="scripts/order.js"></script> -->
+		<!-- <script src="scripts/styles.css"></script> -->
+
 	</head>
 	<body>
 		<div class="login-page">

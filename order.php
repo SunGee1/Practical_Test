@@ -23,11 +23,12 @@
 	</script>
 		<script src="scripts/jquery-3.3.1.min.js"></script>
 		<script src="scripts/order.js"></script>
+		<!-- <script src="scripts/styles.css"></script> -->
 
 		<link rel="stylesheet" type="text/css" href="DataTables/datatables.min.css"/>
 		<script type="text/javascript" src="DataTables/datatables.min.js"></script>
 		
-		<!-- <link rel="stylesheet" href="jquery.css"> -->
+		<link rel="stylesheet" href="jquery.css">
  		<link type="text/css" href="jquery-ui-1.12.1.custom/jquery-ui.min.css" rel="stylesheet" />
 		<link rel="stylesheet" href="scripts/button_styles.css">
 	</script>
@@ -87,7 +88,7 @@
 		echo "<input style='margin-top: 3px;' type='button' class='ui-button ui-corner-all ui-widget' id='inventory_button' onclick='ShowInventory()' value='Show Inventory'>";
 	 } else
 	 {
-	 	echo "<input style='margin-top: 3px;' type='button' class='ui-button ui-corner-all ui-widget' id='inventory_button' onclick='GetArchivedOrders()' value='Show archived orders'>";
+	 	echo "<input style='margin-top: 3px;' type='button' class='ui-button ui-corner-all ui-widget fixed_header' id='inventory_button' onclick='GetArchivedOrders()' value='Show archived orders'>";
 	 }
 		
 	 ?>
@@ -103,18 +104,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr>
-					
-				</tr>
-				<tr>
-					
-				</tr>
 			</tbody>
-			<tfooter>
-				<tr>
-					
-				</tr>
-			</tfooter>
 		</table>
 	</div>
 
@@ -122,16 +112,14 @@
 		<table>
 			<thead>
 				<tr>
-					<th style='text-align:left; width:150px'>Order Number</th>
-					<th style='text-align:right'>User</th>
-					<th style='text-align:right'>Date Order Placed</th>
-					<th style='text-align:right'>Date Order Archived</th>
+					<th style='text-align:center; width:80px'>Order #</th>
+					<th style='text-align:center; width:80px'>User</th>
+					<th style='text-align:center; width:250px'>Date Order Placed</th>
+					<th style='text-align:center; width:250px'>Date Order Archived</th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr>
-					
-				</tr>
+				
 				<tr>
 					
 				</tr>

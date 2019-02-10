@@ -83,3 +83,19 @@ body
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;      
 }
+
+/*----------------------------------------------------------------------*/
+
+/*My CSS styles*/
+/*.fixed_header
+{
+  display:block;
+  overflow:auto;
+  height:200px;
+  width:100%;
+  color:yellow;
+}
+
+.fixed_header thead tr{
+  display:block;
+}*/

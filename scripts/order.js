@@ -447,11 +447,12 @@ function ShowInventory()
 				var count = 0;
 				$(result).each(function()
 					{
-						var row = "<td style='text-align:left'>" + result[count].description + "</td>";
-						row += "<td style='text-align:left'>" + result[count].item_quantity + "</td>";
-						row += "<td style='text-align:left'><input type='button' id='eat' class='ui-button ui-corner-all ui-widget' onclick='' value='Eat'></input></td>";
-						row += "<td style='text-align:left'><input type='button' id='sell' class='ui-button ui-corner-all ui-widget' onclick='' value='Sell'></input></td>";
-
+						var row = "<tr id='eat_" + result[count].item_ref + "'>";
+						row += "<td style='text-align:left'>" + result[count].description + "</td>";
+						row += "<td style='text-align:left' id='eat_" + result[count].item_ref + "'>" + result[count].item_quantity + "</td>";
+						row += "<td style='text-align:left'><input type='button' id='eat' class='ui-button ui-corner-all ui-widget' onclick='eatItem(" + result[count].item_ref + ")' value='Eat'></input></td>";
+						row += "<td style='text-align:left'><input type='button' id='sell' class='ui-button ui-corner-all ui-widget' onclick='eatItem(" + result[count].item_ref + ")' value='Sell'></input></td>";
+						row += "</tr>";
 						$('#inventory').find('tbody:last').append('<tr>' + row + '</tr>');
 						count++;
 						
@@ -483,6 +484,41 @@ function ShowInventory()
 	}
 }
 
+function eatItem(item_ref)
+{
+	$.ajax(
+	{
+		url : "eat_item.php",
+		data : {itemRef : item_ref},
+		dataType : "text",
+		type : "POST",
+		success : function(result)
+		{
+			if (result == 1)
+			{
+				$('div#inventory table tbody tr#eat_'+ item_ref).remove();
+			}
+			else
+			{
+				// console.log(parseInt(result));
+				// var number = result;
+				// console.log(number);
+				// console.log(typeof(number));
+				// var num = parseInt(number, 10);
+				// console.log(num);
+				// console.log(typeof(num));
+				$('div#inventory table tbody tr td#eat_'+ item_ref).html(result - 1);
+				// $('div#inventory table tbody tr:nth-child(2)').html('ssss');
+				// $('div#inventory table tbody tr td:eq(2)').html('ssss');
+			}
+		},
+        error : function(jqXHR, textStatus, errorThrown)
+        {
+            console.log(textStatus, errorThrown);
+        }
+    });
+}
+
 function ArchiveOrder(order_num)
 {
 	$.ajax(
@@ -503,7 +539,7 @@ function ArchiveOrder(order_num)
 
 function GetArchivedOrders()
 {
-	$('#archive tbody').empty();
+	// $('#archive tbody').empty();
 	$.ajax(
 	{
 		url : "get_archived_orders.php",
@@ -515,10 +551,10 @@ function GetArchivedOrders()
 			var count = 0;
 			$(result).each(function()
 				{
-					var row = "<td style='text-align:left'>" + result[count].order_num + "</td>";
-					row += "<td style='text-align:left'>" + result[count].Name + "</td>";
-					row += "<td style='text-align:left'>" + result[count].date_order_placed + "</td>";
-					row += "<td style='text-align:left'>" + result[count].date_order_archived + "</td>";
+					var row = "<td style='text-align:centre'>" + result[count].order_num + "</td>";
+					row += "<td style='text-align:center'>" + result[count].Name + "</td>";
+					row += "<td style='text-align:center'>" + result[count].date_order_placed + "</td>";
+					row += "<td style='text-align:center'>" + result[count].date_order_archived + "</td>";
 
 					$('#archive').find('tbody:last').append('<tr>' + row + '</tr>');
 					count++;
