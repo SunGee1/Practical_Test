@@ -468,6 +468,10 @@ function ShowInventory()
 					{
 						"Close": function()
 						{
+							if($('#sell_error').is(':visible'))
+							{
+								$("#sell_error").toggle();
+							}
 							$(this).dialog('close');
 						}
 					}
@@ -486,11 +490,6 @@ function ShowInventory()
 
 function sellItemDialog(item_ref)
 {
-	// var sell_pop_up = "<div id='sell_item_dialog' style='display: none'>";
-	// sell_pop_up += "<input type='text' style='width: 65px;'></input>";
-	// sell_pop_up += "<input type='button' id='sell' onclick='sellItem(" + item_ref + ")' value='Confirm'></input>";
-	// sell_pop_up += "</div>";
-	// console.log(sell_pop_up);
 	if($("#sell_item_dialog").length == 0)
 	{
 		$("html").append("<div id='sell_item_dialog' style='text-align:center;'><input type='text' id='sell_text_box' style='width: 65px' maxlength='5'></div>");
@@ -512,16 +511,17 @@ function sellItemDialog(item_ref)
 				}
 			}
 		});
-	// console.log("wwwwww");
-
-	// sellItem();
 
 }
 
 function sellItem(item_ref, sell_amount)
 {
 
-
+	$("#sell_text_box").val("");
+	if($("#sell_error").length == 0)
+	{
+		$("#inventory").append("<div id='sell_error' style='text-align:center; display:none'><font color='red' size='3'>You can not sell more then what you have.</font></div>");
+	}
 	$.ajax(
 	{
 		url : "sell_item.php",
@@ -532,11 +532,28 @@ function sellItem(item_ref, sell_amount)
 		{
 			if(!result.hasOwnProperty("new_amount"))
 			{
-				alert("you can not sell so much");
+				if(!$('#sell_error').is(':visible'))
+				{
+					$("#sell_error").toggle();
+				}
 			}
 			else
 			{
-				$('#inventory td#eat_'+ item_ref).html(result.new_amount);
+				if($('#sell_error').is(':visible'))
+				{
+					$("#sell_error").toggle();
+				}
+
+				if(result.new_amount <= 0)
+				{
+					$('div#inventory table tbody tr#eat_'+ item_ref).remove();
+				}
+				else
+				{
+					$('#inventory td#eat_'+ item_ref).html(result.new_amount);
+				}
+				var	money = "Monay: R" + parseFloat(result.current_money).toFixed(2);
+				$("#user_money").html(money);
 				// alert("you have sold some items. You now have: " + result.new_amount);
 			}
 		},

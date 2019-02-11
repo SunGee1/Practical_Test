@@ -48,20 +48,20 @@ if(isset($_POST["username"]) && isset($_POST["password"]))
 	} else
 	{
 		$mysqli = new mysqli($db_hostname, $db_username, $db_password, $db_database);
-		$query = "SELECT firstname, surname, admin, id FROM user WHERE username = ? AND password = PASSWORD(?) LIMIT 1";
+		$query = "SELECT firstname, surname, admin, money, id FROM user WHERE username = ? AND password = PASSWORD(?) LIMIT 1";
 		$statement = $mysqli->prepare($query);
 		$statement->bind_param("ss", $username, $password);
 		$status = $statement->execute();
 		if($status)
 		{
-			$statement->bind_result($firstname, $surname, $admin, $id);
+			$statement->bind_result($firstname, $surname, $admin, $money, $id);
 			$statement->fetch();
 			$statement->close();
 			$mysqli->close();
 			if(isset($firstname))
 			{
 				session_start();
-				$user = (object)array("id" => $id, "firstname" => $firstname, "surname" => $surname, "admin" => $admin ? true : false);
+				$user = (object)array("id" => $id, "firstname" => $firstname, "money" => $money, "surname" => $surname, "admin" => $admin ? true : false);
 				$_SESSION["user"] = $user;
 				header("Location: order.php");
 				die;

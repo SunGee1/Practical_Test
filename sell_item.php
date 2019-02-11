@@ -10,33 +10,17 @@ $user = $_SESSION["user"];
 $item_id = $_POST["itemRef"];
 $sell_amount = $_POST["amount"];
 
-$query = "SELECT item_quantity FROM user_inventory WHERE item_ref = {$item_id} AND inv_user_ref = {$user->id}";
+$query = "SELECT item_quantity, u.money AS money, p.cost AS price FROM user_inventory LEFT JOIN user u ON u.id = {$user->id} LEFT JOIN product p ON p.id = {$item_id} WHERE item_ref = {$item_id} AND inv_user_ref = {$user->id}";
 $result = $db_con->query($query);
 $return_row = array();
 while ($row = mysqli_fetch_assoc($result)) {
 	$return_row[] = $row;
 }
-// var_dump("0------------------");
-// var_dump($return_row[0]["item_quantity"]);
-// var_dump($sell_amount);
-// var_dump($return_row[0]["item_quantity"] . " - " . $sell_amount . " = " . ($return_row[0]["item_quantity"] - $sell_amount));
-// var_dump("New amount: " . ($return_row[0]["item_quantity"] - $sell_amount));
-// var_dump("is new amount less then 0: " . (($return_row[0]["item_quantity"] - $sell_amount) < 0));
-// var_dump("1------------------");
+// var_dump($return_row[0]["money"]);
+// var_dump($return_row[0]["price"] * $sell_amount);
+$user_money = ($return_row[0]["money"] + (($return_row[0]["price"] / 2) * $sell_amount));
+// var_dump($user_money);
 
-// $answer =  "beginning ";
-// $answer .= parseInt($return_row[0]["item_quantity"], 10);
-// $answer .= " - ";
-// $answer .= parseInt($sell_amount, 10);
-// $answer .= " = ";
-// $answer .= parseInt($return_row[0]["item_quantity"] - $sell_amount, 10);
-// var_dump($answer);
-// $numone = 1;
-// $numtwo = 2;
-// $wol = "number one = " . $numone . ". number two = " . $numtwo . ".";
-// var_dump($wol);
-// die("the END");
-// var_dump($answer);
 if ($return_row[0]["item_quantity"] - $sell_amount < 0)
 {
 	$return_row = ["success" => false];
@@ -48,8 +32,12 @@ else
 	$statement->bind_param("iii", $sell_amount, $item_id, $user->id);
 	$statement->execute();
 
+	$statement = $db_con->prepare("UPDATE user SET money = ? WHERE id = ?");
+	$statement->bind_param("ii", $user_money, $user->id);
+	$statement->execute();
+
 	$return_row = ["new_amount" => $return_row[0]["item_quantity"] - $sell_amount];
-	// var_dump($return_row);
+	$return_row += ["current_money" => $user_money];
 	die(json_encode($return_row));
 }
 ?>

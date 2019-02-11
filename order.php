@@ -34,7 +34,7 @@
 	</script>
 </head>
 <body>
-<div>You are logging in as <?php echo $name.$isAdmin ?></div><br>
+<div class="form_style">You are logging in as <?php echo $name.$isAdmin ?></div><div id='user_money' class='form_style'>Money: <?php echo 'R'.number_format((float)$user->money, 2, '.', '') ?></div><br>
 <form method="get" action="logout.php">
     <button type="submit">Logout</button>
 </form>

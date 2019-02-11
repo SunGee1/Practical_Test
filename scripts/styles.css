@@ -99,3 +99,10 @@ body
 .fixed_header thead tr{
   display:block;
 }*/
+
+.form_style {
+    width:500px;
+    margin:50px ;
+    float:right;
+    top:-40px;
+}
