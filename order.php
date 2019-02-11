@@ -34,7 +34,7 @@
 	</script>
 </head>
 <body>
-<div>You are loggin in as <?php echo $name.$isAdmin ?></div><br>
+<div>You are logging in as <?php echo $name.$isAdmin ?></div><br>
 <form method="get" action="logout.php">
     <button type="submit">Logout</button>
 </form>
@@ -107,6 +107,11 @@
 			</tbody>
 		</table>
 	</div>
+
+	<!-- <div id="sell_item_dialog" style="display: none; text-align:center;">
+		<input type="text" id="sell_text_box" style="width: 65px" maxlength="5"> -->
+		<!-- <input type="button" name="" value="Confirm"> -->
+	<!-- </div> -->
 
 	<div id="archive" style="display: none">
 		<table>

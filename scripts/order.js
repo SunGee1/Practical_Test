@@ -451,7 +451,7 @@ function ShowInventory()
 						row += "<td style='text-align:left'>" + result[count].description + "</td>";
 						row += "<td style='text-align:left' id='eat_" + result[count].item_ref + "'>" + result[count].item_quantity + "</td>";
 						row += "<td style='text-align:left'><input type='button' id='eat' class='ui-button ui-corner-all ui-widget' onclick='eatItem(" + result[count].item_ref + ")' value='Eat'></input></td>";
-						row += "<td style='text-align:left'><input type='button' id='sell' class='ui-button ui-corner-all ui-widget' onclick='eatItem(" + result[count].item_ref + ")' value='Sell'></input></td>";
+						row += "<td style='text-align:left'><input type='button' id='sell' class='ui-button ui-corner-all ui-widget' onclick='sellItemDialog(" + result[count].item_ref + ")' value='Sell'></input></td>";
 						row += "</tr>";
 						$('#inventory').find('tbody:last').append('<tr>' + row + '</tr>');
 						count++;
@@ -484,6 +484,69 @@ function ShowInventory()
 	}
 }
 
+function sellItemDialog(item_ref)
+{
+	// var sell_pop_up = "<div id='sell_item_dialog' style='display: none'>";
+	// sell_pop_up += "<input type='text' style='width: 65px;'></input>";
+	// sell_pop_up += "<input type='button' id='sell' onclick='sellItem(" + item_ref + ")' value='Confirm'></input>";
+	// sell_pop_up += "</div>";
+	// console.log(sell_pop_up);
+	if($("#sell_item_dialog").length == 0)
+	{
+		$("html").append("<div id='sell_item_dialog' style='text-align:center;'><input type='text' id='sell_text_box' style='width: 65px' maxlength='5'></div>");
+	}
+
+	$('#sell_item_dialog').dialog
+		({
+			title:  "Specify sell amount",
+			modal: true,
+            width: 280,
+            height: "auto",
+			buttons:
+			{
+				"Confirm": function()
+				{
+					var amount = $("#sell_text_box").val();
+					sellItem(item_ref, amount);
+					$(this).dialog('close');
+				}
+			}
+		});
+	// console.log("wwwwww");
+
+	// sellItem();
+
+}
+
+function sellItem(item_ref, sell_amount)
+{
+
+
+	$.ajax(
+	{
+		url : "sell_item.php",
+		data : {itemRef: item_ref, amount: sell_amount},
+		dataType : "json",
+		type : "POST",
+		success : function(result)
+		{
+			if(!result.hasOwnProperty("new_amount"))
+			{
+				alert("you can not sell so much");
+			}
+			else
+			{
+				$('#inventory td#eat_'+ item_ref).html(result.new_amount);
+				// alert("you have sold some items. You now have: " + result.new_amount);
+			}
+		},
+        error : function(jqXHR, textStatus, errorThrown)
+        {
+            console.log(textStatus, errorThrown);
+        }
+    });
+}
+
 function eatItem(item_ref)
 {
 	$.ajax(
@@ -500,16 +563,7 @@ function eatItem(item_ref)
 			}
 			else
 			{
-				// console.log(parseInt(result));
-				// var number = result;
-				// console.log(number);
-				// console.log(typeof(number));
-				// var num = parseInt(number, 10);
-				// console.log(num);
-				// console.log(typeof(num));
 				$('div#inventory table tbody tr td#eat_'+ item_ref).html(result - 1);
-				// $('div#inventory table tbody tr:nth-child(2)').html('ssss');
-				// $('div#inventory table tbody tr td:eq(2)').html('ssss');
 			}
 		},
         error : function(jqXHR, textStatus, errorThrown)
@@ -603,3 +657,6 @@ function ErrorDialog(dialog_title, error_message)
 		}
 	);
 }
+
+// <input type="text" id="sell_text_box" style="width: 65px" maxlength="5">
+
