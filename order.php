@@ -15,6 +15,7 @@
 	$db_con = new mysqli($db_hostname, $db_username, $db_password, $db_database);
 	$query = "SELECT * FROM product";
 	$result = $db_con->query($query);
+	var_dump($user->money);
 ?>
 
 <!DOCTYPE html>

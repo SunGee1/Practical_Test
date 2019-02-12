@@ -552,7 +552,7 @@ function sellItem(item_ref, sell_amount)
 				{
 					$('#inventory td#eat_'+ item_ref).html(result.new_amount);
 				}
-				var	money = "Monay: R" + parseFloat(result.current_money).toFixed(2);
+				var	money = "Money: R" + parseFloat(result.current_money).toFixed(2);
 				$("#user_money").html(money);
 				// alert("you have sold some items. You now have: " + result.new_amount);
 			}
