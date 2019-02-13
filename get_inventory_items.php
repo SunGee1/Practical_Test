@@ -9,7 +9,7 @@
 	require("settings.php");
 	$user = $_SESSION["user"];
 
-	$query = "SELECT item_ref, p.description, item_quantity FROM user_inventory LEFT JOIN product p ON item_ref = p.id WHERE inv_user_ref = {$user->id}";
+	$query = "SELECT item_ref, p.description, p.cost / 2 AS cost, item_quantity FROM user_inventory LEFT JOIN product p ON item_ref = p.id WHERE inv_user_ref = {$user->id}";
 	$result = $db_con->query($query);
 	$rows = array();
 	while ($row = mysqli_fetch_array($result)) {

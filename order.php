@@ -1,6 +1,6 @@
 <?php
 	session_start();
-	
+
 	if(!isset($_SESSION["user"]))
 	{
 		header("Location: login.php");
@@ -12,10 +12,14 @@
 	$name = $user->firstname;
 	$isAdmin = $user->admin ? " - Admin user" : " - Basic user" ;
 	
+	$query = "SELECT money FROM user WHERE id = {$user->id}";
+	$result = $db_con->query($query);
+	$result = $result->fetch_object();
+	$user->money = $result->money;
+
 	$db_con = new mysqli($db_hostname, $db_username, $db_password, $db_database);
 	$query = "SELECT * FROM product";
 	$result = $db_con->query($query);
-	var_dump($user->money);
 ?>
 
 <!DOCTYPE html>
@@ -24,18 +28,18 @@
 	</script>
 		<script src="scripts/jquery-3.3.1.min.js"></script>
 		<script src="scripts/order.js"></script>
-		<!-- <script src="scripts/styles.css"></script> -->
+		<link rel="stylesheet" href="scripts/styles.css">
 
 		<link rel="stylesheet" type="text/css" href="DataTables/datatables.min.css"/>
 		<script type="text/javascript" src="DataTables/datatables.min.js"></script>
 		
-		<link rel="stylesheet" href="jquery.css">
+		<link rel="stylesheet" href="scripts/jquery.css">
  		<link type="text/css" href="jquery-ui-1.12.1.custom/jquery-ui.min.css" rel="stylesheet" />
 		<link rel="stylesheet" href="scripts/button_styles.css">
 	</script>
 </head>
 <body>
-<div class="form_style">You are logging in as <?php echo $name.$isAdmin ?></div><div id='user_money' class='form_style'>Money: <?php echo 'R'.number_format((float)$user->money, 2, '.', '') ?></div><br>
+<div class="">You are logging in as <?php echo $name.$isAdmin ?></div><div id='user_money' class='form_style'>Money: <?php echo 'R'.number_format((float)$user->money, 2, '.', '') ?></div><br>
 <form method="get" action="logout.php">
     <button type="submit">Logout</button>
 </form>
@@ -69,13 +73,16 @@
 			{	
 				echo "<tr>";		
 				echo "<td style='text-align:left' width='33.33%'>" . $row['description'] . "</td>";		
-				echo "<td style='text-align:right' width='33.33%'>" . 'R' . $row['cost']. '.00' . "</td>";		
+				echo "<td style='text-align:right' width='33.33%'>" . 'R' . $row['cost'] . "</td>";		
 				echo "<td style='text-align:right' width='33.33%'>" . "<input type='text' class='order_product' cost='{$row['cost']}' id='{$row['id']}' name='inputAdd' style='width: 65px;' maxlength='2'></input>" . "</td>";
 				echo "</tr>";
 			}
 		?>
 		</tbody>
 	 	<footer>
+	 		<tr><td colspan="3" style='text-align:center'>----------------------------------</td></tr>
+				<td><label>Total Price:</label></td>
+				<td colspan="2"><label>R428.00</label></td>
 			<tr>
 				<td id='place_order_button'><input class="ui-button ui-corner-all ui-widget" type='button' onclick='PlaceOrder()' value='Place order' ></td>
 			 	<td id='update_order_button'><input class="ui-button ui-corner-all ui-widget" type='button' value='Update order' ></td>
@@ -87,6 +94,8 @@
 	 if (!$user->admin) {
 	 	echo "<input style='margin-top: 3px;' type='button' class='ui-button ui-corner-all ui-widget' id='place_new_order' onclick='OrderDialog()' value='Place new order'>";
 		echo "<input style='margin-top: 3px;' type='button' class='ui-button ui-corner-all ui-widget' id='inventory_button' onclick='ShowInventory()' value='Show Inventory'>";
+		echo "<br>";
+		echo "<input style='margin-top: 3px;' type='button' class='ui-button ui-corner-all ui-widget' id='gamble_button' onclick='' value='Gamble'>";
 	 } else
 	 {
 	 	echo "<input style='margin-top: 3px;' type='button' class='ui-button ui-corner-all ui-widget fixed_header' id='inventory_button' onclick='GetArchivedOrders()' value='Show archived orders'>";

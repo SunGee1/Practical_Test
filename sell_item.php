@@ -52,7 +52,7 @@ function updateInventory($connection, $sell_amount, $item_id, $user_id)
 function updateUserMoney($connection, $user_money, $user_id)
 {
 	$statement = $connection->prepare("UPDATE user SET money = ? WHERE id = ?");
-	$statement->bind_param("ii", $user_money, $user_id);
+	$statement->bind_param("di", $user_money, $user_id);
 	$statement->execute();
 }
 ?>

@@ -2,7 +2,7 @@ var table = null;
 
 $(document).ready( function () {
    	ViewOrdersTable();
-
+   	
 });
 
 function ViewOrdersTable ()
@@ -451,9 +451,10 @@ function ShowInventory()
 						row += "<td style='text-align:left'>" + result[count].description + "</td>";
 						row += "<td style='text-align:left' id='eat_" + result[count].item_ref + "'>" + result[count].item_quantity + "</td>";
 						row += "<td style='text-align:left'><input type='button' id='eat' class='ui-button ui-corner-all ui-widget' onclick='eatItem(" + result[count].item_ref + ")' value='Eat'></input></td>";
-						row += "<td style='text-align:left'><input type='button' id='sell' class='ui-button ui-corner-all ui-widget' onclick='sellItemDialog(" + result[count].item_ref + ")' value='Sell'></input></td>";
+						row += "<td style='text-align:left'><input type='button' id='sell' class='ui-button ui-corner-all ui-widget' onclick='sellItemDialog(" + result[count].item_ref + "," + result[count].cost + ")' value='Sell'></input></td>";
 						row += "</tr>";
 						$('#inventory').find('tbody:last').append('<tr>' + row + '</tr>');
+						// console.log(result[count].cost);
 						count++;
 						
 					});
@@ -488,18 +489,29 @@ function ShowInventory()
 	}
 }
 
-function sellItemDialog(item_ref)
+function sellItemDialog(item_ref, item_cost)
 {
 	if($("#sell_item_dialog").length == 0)
 	{
-		$("html").append("<div id='sell_item_dialog' style='text-align:center;'><input type='text' id='sell_text_box' style='width: 65px' maxlength='5'></div>");
+		var cost = "R" + item_cost.toFixed(2) + " &times; ";
+		$("html").append("<div id='sell_item_dialog' style='text-align:center;'><label id='item_cost_label' cost='" + item_cost + "'>" + cost + "</label><input type='text' id='sell_text_box' style='width: 65px' maxlength='5'><label id='total_sell_cost'> = R0.00</label></div>");
 	}
+	else if($("#item_cost_label").attr('cost') != item_cost)
+	{
+		$("#item_cost_label").html("R"+item_cost.toFixed(2) + " &times; ");
+		$("#item_cost_label").attr('cost', item_cost);
+	}
+
+	$( "#sell_text_box" ).on( "keyup", function( event ) {
+  		var total_sell_cost = item_cost * $("#sell_text_box").val();
+  		$("#total_sell_cost").text(" = R"+total_sell_cost.toFixed(2));
+	});
 
 	$('#sell_item_dialog').dialog
 		({
 			title:  "Specify sell amount",
 			modal: true,
-            width: 280,
+            width: 320,
             height: "auto",
 			buttons:
 			{
@@ -511,6 +523,10 @@ function sellItemDialog(item_ref)
 				}
 			}
 		});
+	$('#sell_item_dialog').on('dialogclose', function(event) {
+		$("#total_sell_cost").text(" = R0.00");
+		$("#sell_text_box").val("");
+	});
 
 }
 

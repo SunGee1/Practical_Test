@@ -11,7 +11,7 @@
 	}
 
 	$user = $_SESSION["user"];
-
+// die("ssss");
 	if ($user->admin)
 	{	
 		$query = "SELECT u.firstname, uo.id, SUM(p.cost * op.quantity) AS Value, uo.order_date, uo.order_update, s.label AS Status
