@@ -65,34 +65,52 @@ function isEmpty(obj)
 	}
 }
 
+function calculateTotalOrderCost(item_id)
+{
+	var price = 0;
+	$(".order_product").each(function(){
+		var amount = $(this).val();
+		var cost = $("#place_order_table").find("td#place_order_cost_id_"+item_id).html().replace("R", "");
+		// var cost = $("#place_order_cost_id").html().replace("R", "");
+	  	price += (cost * amount);
+	});
+	$("#total_order_price_label").text("R"+price);
+}
+
 function OrderDialog (order_number = false)
 {
-    	ClearOrderForm();
-    	var title = "Place new order";
-		if (order_number)
+	$(".order_product").on("keyup", function(){
+		var item_id = $(this).attr("id");
+		console.log(item_id);
+		calculateTotalOrderCost(item_id);
+	});	
+
+	ClearOrderForm();
+	var title = "Place new order";
+	if (order_number)
+	{
+		title = "Update order "+order_number;
+		PopulateUpdateOrderTable(order_number);
+	}
+
+	$("#place_order_table").dialog
+	(
 		{
-			title = "Update order "+order_number;
-			PopulateUpdateOrderTable(order_number);
-		}
-
-		$("#place_order_table").dialog
-		(
+			title: title,
+			modal: true,
+			height: "auto",
+			width: "350px",
+			buttons: 
 			{
-				title: title,
-				modal: true,
-				height: "auto",
-				width: "350px",
-				buttons: 
-				{
-		    	    Cancel: function() 
-		    	    {
-		    	    	$(this).dialog('close');
-		    	    }
-				}
+	    	    Cancel: function() 
+	    	    {
+	    	    	$(this).dialog('close');
+	    	    }
 			}
-		);
+		}
+	);
 
-		Toggle_order_type_button(order_number);
+	Toggle_order_type_button(order_number);
 }
 
 function Toggle_order_type_button(clicked_button)
@@ -502,7 +520,7 @@ function sellItemDialog(item_ref, item_cost)
 		$("#item_cost_label").attr('cost', item_cost);
 	}
 
-	$( "#sell_text_box" ).on( "keyup", function( event ) {
+	$( "#sell_text_box" ).on( "keyup", function( /*event*/ ) {
   		var total_sell_cost = item_cost * $("#sell_text_box").val();
   		$("#total_sell_cost").text(" = R"+total_sell_cost.toFixed(2));
 	});

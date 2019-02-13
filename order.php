@@ -73,7 +73,7 @@
 			{	
 				echo "<tr>";		
 				echo "<td style='text-align:left' width='33.33%'>" . $row['description'] . "</td>";		
-				echo "<td style='text-align:right' width='33.33%'>" . 'R' . $row['cost'] . "</td>";		
+				echo "<td id='place_order_cost_id_{$row['id']}' style='text-align:right' width='33.33%'>" . 'R' . $row['cost'] . "</td>";		
 				echo "<td style='text-align:right' width='33.33%'>" . "<input type='text' class='order_product' cost='{$row['cost']}' id='{$row['id']}' name='inputAdd' style='width: 65px;' maxlength='2'></input>" . "</td>";
 				echo "</tr>";
 			}
@@ -82,7 +82,7 @@
 	 	<footer>
 	 		<tr><td colspan="3" style='text-align:center'>----------------------------------</td></tr>
 				<td><label>Total Price:</label></td>
-				<td colspan="2"><label>R428.00</label></td>
+				<td colspan="2"><label id="total_order_price_label">R0.00</label></td>
 			<tr>
 				<td id='place_order_button'><input class="ui-button ui-corner-all ui-widget" type='button' onclick='PlaceOrder()' value='Place order' ></td>
 			 	<td id='update_order_button'><input class="ui-button ui-corner-all ui-widget" type='button' value='Update order' ></td>
