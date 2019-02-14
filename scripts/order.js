@@ -69,19 +69,17 @@ function calculateTotalOrderCost(item_id)
 {
 	var price = 0;
 	$(".order_product").each(function(){
+		var cost = $(this).attr("cost");
 		var amount = $(this).val();
-		var cost = $("#place_order_table").find("td#place_order_cost_id_"+item_id).html().replace("R", "");
-		// var cost = $("#place_order_cost_id").html().replace("R", "");
-	  	price += (cost * amount);
+		price += (cost * amount);
 	});
-	$("#total_order_price_label").text("R"+price);
+	$("#total_order_price_label").text("R"+price.toFixed(2));
 }
 
 function OrderDialog (order_number = false)
 {
 	$(".order_product").on("keyup", function(){
 		var item_id = $(this).attr("id");
-		console.log(item_id);
 		calculateTotalOrderCost(item_id);
 	});	
 
@@ -165,7 +163,10 @@ function PlaceOrder ()
 		products.push({product_id: $(this).attr("id"), product_cost: $(this).attr("cost"), product_quantity: $(this).val()});
 		$(this).val("");
 	});
-	
+
+	var total_price = $("#total_order_price_label").text().replace("R", "");
+	products.push({total_order_price : total_price});
+	// console.log(total_price);
 	if (count != 0)
 	{
 		count = 0;
@@ -177,9 +178,16 @@ function PlaceOrder ()
 			type : 'POST',
 			success : function(result)
 			{
-				result.items = products;
-				AddOrderToTable(result);
-				$("#place_order_table").dialog('close');
+				// result.items = products;
+				console.log("You have successfully given money to buy items. CONGRATULATIONS!!!");
+				if (result.hasOwnProperty("not_enough_money"))
+				{
+					console.log("money "+result.enough_money);
+				}
+				// AddOrderToTable(result);
+
+				// $("#total_order_price_label").text("R0.00");
+				// $("#place_order_table").dialog('close');
 			},
 		    error : function(jqXHR, textStatus, errorThrown)
 		    {
@@ -441,7 +449,7 @@ function  AddOrderToTable(order)
 	
 	table.row.add([
 					order.firstname,
-					"<div title='"+order.items+"'><font color='purple'>"+order.order_id+"</font></div>",
+					"<div title=''><font color='purple'>"+order.order_id+"</font></div>",
 					"R" + order.value + ".00",
 					order.order_date,
 					order.order_update,

@@ -72,9 +72,12 @@
 			while ($row = mysqli_fetch_array($result))	
 			{	
 				echo "<tr>";		
-				echo "<td style='text-align:left' width='33.33%'>" . $row['description'] . "</td>";		
-				echo "<td id='place_order_cost_id_{$row['id']}' style='text-align:right' width='33.33%'>" . 'R' . $row['cost'] . "</td>";		
-				echo "<td style='text-align:right' width='33.33%'>" . "<input type='text' class='order_product' cost='{$row['cost']}' id='{$row['id']}' name='inputAdd' style='width: 65px;' maxlength='2'></input>" . "</td>";
+				echo "<td style='text-align:left' width='33.33%'>" . $row['description'] . "</td>";
+
+				echo "<td style='text-align:right' width='33.33%'>" . 'R' . $row['cost'] . "</td>";
+
+				echo "<td style='text-align:right' width='33.33%'>" . "<input type='text' class='order_product' cost='" . $row['cost'] . "' name='inputAdd' style='width: 65px;' maxlength='2'></input>" . "</td>";
+
 				echo "</tr>";
 			}
 		?>
