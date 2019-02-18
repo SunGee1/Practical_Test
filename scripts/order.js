@@ -165,29 +165,31 @@ function PlaceOrder ()
 	});
 
 	var total_price = $("#total_order_price_label").text().replace("R", "");
-	products.push({total_order_price : total_price});
-	// console.log(total_price);
+	// console.log(products);
 	if (count != 0)
 	{
 		count = 0;
 		$.ajax(
 		{
 			url : "place_order.php",
-			data : {products: products},
+			data : {products: products, total_price: total_price},
 			dataType : "json",
 			type : 'POST',
 			success : function(result)
 			{
-				// result.items = products;
+				// result.items = products; get items to view on mouse pop up
 				console.log("You have successfully given money to buy items. CONGRATULATIONS!!!");
 				if (result.hasOwnProperty("not_enough_money"))
 				{
 					console.log("money "+result.enough_money);
 				}
-				// AddOrderToTable(result);
-
-				// $("#total_order_price_label").text("R0.00");
-				// $("#place_order_table").dialog('close');
+				else
+				{
+					AddOrderToTable(result);
+					$("#user_money").text("R"+result.enough_money);
+					$("#place_order_table").dialog('close');
+				}
+				$("#total_order_price_label").text("R0.00");
 			},
 		    error : function(jqXHR, textStatus, errorThrown)
 		    {

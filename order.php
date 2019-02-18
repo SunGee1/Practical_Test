@@ -76,7 +76,7 @@
 
 				echo "<td style='text-align:right' width='33.33%'>" . 'R' . $row['cost'] . "</td>";
 
-				echo "<td style='text-align:right' width='33.33%'>" . "<input type='text' class='order_product' cost='" . $row['cost'] . "' name='inputAdd' style='width: 65px;' maxlength='2'></input>" . "</td>";
+				echo "<td style='text-align:right' width='33.33%'>" . "<input type='text' id='{$row['id']}' class='order_product' cost='" . $row['cost'] . "' name='inputAdd' style='width: 65px;' maxlength='2'></input>" . "</td>";
 
 				echo "</tr>";
 			}
