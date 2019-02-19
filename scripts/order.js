@@ -103,6 +103,7 @@ function OrderDialog (order_number = false)
 	    	    Cancel: function() 
 	    	    {
 	    	    	$(this).dialog('close');
+	    	    	$("#place_order_table tr:last").hide();
 	    	    }
 			}
 		}
@@ -182,6 +183,9 @@ function PlaceOrder ()
 				if (result.hasOwnProperty("not_enough_money"))
 				{
 					console.log("money "+result.enough_money);
+					$("#place_order_table tr:last").after("<tr><td colspan='3' class='notification'>You do not have enough money.</td></tr>");
+
+					// $('#myTable tr:last').after('<tr>...</tr><tr>...</tr>');
 				}
 				else
 				{
@@ -452,7 +456,7 @@ function  AddOrderToTable(order)
 	table.row.add([
 					order.firstname,
 					"<div title=''><font color='purple'>"+order.order_id+"</font></div>",
-					"R" + order.value + ".00",
+					"R" + order.value,
 					order.order_date,
 					order.order_update,
 					status,

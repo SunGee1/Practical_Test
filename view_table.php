@@ -43,7 +43,6 @@
 		$rows[] = $row;
 	}
 
-
 	function GetButtons($order)
 	{
 		global $user;

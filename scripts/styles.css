@@ -107,3 +107,8 @@ body
     font-weight:bold;
     /*top:-40px;*/
 }
+
+.notification{
+  color:red;
+  font-size: 15px;
+}
