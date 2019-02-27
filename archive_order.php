@@ -10,18 +10,15 @@ if(!isset($_SESSION["user"]))
 $user = $_SESSION["user"];
 $order_id = $_POST["orderNum"];
 
-
 $query = "DELETE FROM order_product WHERE order_ref = {$order_id}";
 $result = $db_con->query($query);
 
-$query = "SELECT (order_date) FROM user_order WHERE id = {$order_id}";
+$query = "SELECT user_ref, order_date FROM user_order WHERE id = {$order_id}";
 $result = $db_con->query($query);
-
 $row = mysqli_fetch_assoc($result);
-// $date = $row['order_date'];
 
 $statement = $db_con->prepare("INSERT INTO archive (order_num, user_ref, date_order_placed) VALUES (?, ?, ?)");
-$statement->bind_param("iis", $order_id, $user->id, $row['order_date']);
+$statement->bind_param("iis", $order_id, $row['user_ref'], $row['order_date']);
 $statement->execute();
 
 $query = "DELETE FROM user_order WHERE id = {$order_id}";

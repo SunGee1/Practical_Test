@@ -2,8 +2,8 @@
 
 $db_hostname = "localhost";
 $db_username = "root";
-// $db_password = "ManSon2012";
-$db_password = "";
+$db_password = "ManSon2012";
+// $db_password = "";
 $db_database = "ordering";
 $db_con = new mysqli($db_hostname, $db_username, $db_password, $db_database);
 

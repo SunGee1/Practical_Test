@@ -35,7 +35,7 @@
 
 	$result = $db_con->query($query);
 
-	$rows = [];
+	$rows = array();
 
 	while($row = mysqli_fetch_object($result))
 	{

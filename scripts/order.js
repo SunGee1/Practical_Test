@@ -65,7 +65,7 @@ function isEmpty(obj)
 	}
 }
 
-function calculateTotalOrderCost(item_id)
+function calculateTotalOrderCost()
 {
 	var price = 0;
 	$(".order_product").each(function(){
@@ -79,36 +79,37 @@ function calculateTotalOrderCost(item_id)
 function OrderDialog (order_number = false)
 {
 	$(".order_product").on("keyup", function(){
-		var item_id = $(this).attr("id");
-		calculateTotalOrderCost(item_id);
+		// var item_id = $(this).attr("id");
+		calculateTotalOrderCost();
 	});	
 
 	ClearOrderForm();
 	var title = "Place new order";
 	if (order_number)
 	{
+		// console.log($("#total_order_price_label").text().replace("R",''));
+		// var current_order_price = $("#total_order_price_label").text().replace("R",'');
 		title = "Update order "+order_number;
 		PopulateUpdateOrderTable(order_number);
+		// $("#update_order_button").find(":button").attr("onclick", "UpdateOrder(" + 1 + ")");
 	}
-
 	$("#place_order_table").dialog
 	(
 		{
 			title: title,
 			modal: true,
 			height: "auto",
-			width: "350px",
+			width: "365px",
 			buttons: 
 			{
 	    	    Cancel: function() 
 	    	    {
 	    	    	$(this).dialog('close');
-	    	    	$("#place_order_table tr:last").hide();
+	    	    	$("#total_order_price_label").text("R0.00");
 	    	    }
 			}
 		}
 	);
-
 	Toggle_order_type_button(order_number);
 }
 
@@ -179,7 +180,6 @@ function PlaceOrder ()
 			success : function(result)
 			{
 				// result.items = products; get items to view on mouse pop up
-				console.log("You have successfully given money to buy items. CONGRATULATIONS!!!");
 				if (result.hasOwnProperty("not_enough_money"))
 				{
 					console.log("money "+result.enough_money);
@@ -334,6 +334,7 @@ function PopulateUpdateOrderTable(orderNum)
 				});
 
 			};
+			calculateTotalOrderCost();
 		},
 		error : function(jqXHR, textStatus, errorThrown)
 		{
@@ -369,24 +370,28 @@ function ClearOrderForm()
 	});
 }
 
-function UpdateOrder(orderNum)
+function UpdateOrder(orderNum, order_price = 0)
 {
-	var product_quantities = [];
-	// console.log(orderNum);
+	var product_details = [];
+	
+
+
 	$('.order_product').each(function()
 	{
 		if(($(this).val() == "") || ($(this).val() == 0))
 		{
 			return;
 		}
-		product_quantities.push({product_id: $(this).attr("id"), product_quantity: $(this).val()});
+		product_details.push({product_id: $(this).attr("id"), product_quantity: $(this).val(), product_cost: $(this).attr("cost")});
 		$(this).val("");
+		$("#total_order_price_label").text("R0.00");
 	});
 
+	
 	$.ajax(
 	{
 		url : "update_order.php",
-		data : {order_number: orderNum, products: product_quantities},
+		data : {order_number: orderNum, products: product_details},
 		dataType : "json",
 		type : 'POST',
 		success : function(result)
@@ -477,7 +482,9 @@ function ShowInventory()
 			success : function(result)
 			{
 				var count = 0;
-				$(result).each(function()
+				if (result != 0)
+				{
+					$(result).each(function()
 					{
 						var row = "<tr id='eat_" + result[count].item_ref + "'>";
 						row += "<td style='text-align:left'>" + result[count].description + "</td>";
@@ -490,6 +497,11 @@ function ShowInventory()
 						count++;
 						
 					});
+				}
+				else
+				{
+					$('#inventory').append("<div id='inventory_is_empty_div' class='notification' style='text-align:center'>Inventory is empty</div>");
+				}
 
 				$('#inventory').dialog
 				({
@@ -505,6 +517,7 @@ function ShowInventory()
 							{
 								$("#sell_error").toggle();
 							}
+							$("#inventory_is_empty_div").remove();
 							$(this).dialog('close');
 						}
 					}
@@ -668,7 +681,10 @@ function GetArchivedOrders()
 		success : function(result)
 		{
 			var count = 0;
-			$(result).each(function()
+			if (result != 0)
+			{
+				console.log(result);
+				$(result).each(function()
 				{
 					var row = "<td style='text-align:centre'>" + result[count].order_num + "</td>";
 					row += "<td style='text-align:center'>" + result[count].Name + "</td>";
@@ -679,6 +695,11 @@ function GetArchivedOrders()
 					count++;
 					
 				});
+			}
+			else
+			{
+				$('#archive').append("<div id='no_archived_orders_div' class='notification' style='text-align:center'>No archived orders</div>");
+			}
 
 			$('#archive').dialog
 			({
@@ -690,6 +711,7 @@ function GetArchivedOrders()
 				{
 					"Close": function()
 					{
+						$("#no_archived_orders_div").remove();
 						$(this).dialog('close');
 					}
 				}

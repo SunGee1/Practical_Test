@@ -8,7 +8,6 @@
 	
 	require("settings.php");
 	$user = $_SESSION["user"];
-
 	$name = $user->firstname;
 	$isAdmin = $user->admin ? " - Admin user" : " - Basic user" ;
 	
@@ -39,8 +38,10 @@
 	</script>
 </head>
 <body>
-	<?php $show_money =  "<div id='user_money' class='form_style'>Money: <?php echo 'R'.number_format((float)$user->money, 2, '.', '') ?></div><br>"?>
-<div class="">You are logging in as <?php echo $name.$isAdmin; echo $isAdmin ? "" : $show_money ?>
+	<?php
+		$show_money =  "<div id='user_money' class='form_style'>Money: R" . $user->money . "</div><br>";
+	?>
+<div class="">You are logging in as <?php echo $name.$isAdmin; echo $user->admin ? "" : $show_money ?>
 <form method="get" action="logout.php">
     <button type="submit">Logout</button>
 </form>
@@ -138,16 +139,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				
-				<tr>
-					
-				</tr>
 			</tbody>
-			<tfooter>
-				<tr>
-					
-				</tr>
-			</tfooter>
 		</table>
 	</div>
 
