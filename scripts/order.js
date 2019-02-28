@@ -38,7 +38,8 @@ function ViewOrdersTable ()
 							status: rows[index].Status,
 							buttons: rows[index].buttons
 							};
-					AddOrderToTable(order);
+							var wang = FormatOrderForOrderLabel(order);
+					AddOrderToTable(order, wang);
 				}
 			}
 			else
@@ -151,30 +152,38 @@ function Toggle_order_type_button(clicked_button)
 	}
 }
 
-function PlaceOrder ()
+function GetProductInfoInOrder()
 {
-	var products = [];
-	var count = 0;
+	var products1 = [];
+	var cnt = 0;
 	$('.order_product').each(function()
 	{
 		if(($(this).val() == "") || ($(this).val() == 0))
 		{
 			return;
 		}
-		count++;
-		products.push({product_id: $(this).attr("id"), product_cost: $(this).attr("cost"), product_quantity: $(this).val()});
+		cnt++;
+		products1.push({product_id: $(this).attr("id"), product_cost: $(this).attr("cost"), product_quantity: $(this).val()});
 		$(this).val("");
 	});
+	return obj =
+		{
+			count: cnt,
+			products: products1
+		};
+}
 
+function PlaceOrder ()
+{
+	var product_info = GetProductInfoInOrder();
 	var total_price = $("#total_order_price_label").text().replace("R", "");
-	// console.log(products);
-	if (count != 0)
+	if (product_info.count != 0)
 	{
-		count = 0;
+		// count = 0;
 		$.ajax(
 		{
 			url : "place_order.php",
-			data : {products: products, total_price: total_price},
+			data : {products: product_info.products, total_price: total_price},
 			dataType : "json",
 			type : 'POST',
 			success : function(result)
@@ -182,14 +191,15 @@ function PlaceOrder ()
 				// result.items = products; get items to view on mouse pop up
 				if (result.hasOwnProperty("not_enough_money"))
 				{
-					console.log("money "+result.enough_money);
+					// console.log("money "+result.enough_money);
 					$("#place_order_table tr:last").after("<tr><td colspan='3' class='notification'>You do not have enough money.</td></tr>");
 
 					// $('#myTable tr:last').after('<tr>...</tr><tr>...</tr>');
 				}
 				else
 				{
-					AddOrderToTable(result);
+					// $('#order_label_'+orderNum).prop('title', 'product_info.products');
+					AddOrderToTable(result, product_info.products);
 					$("#user_money").text("R"+result.enough_money);
 					$("#place_order_table").dialog('close');
 				}
@@ -370,40 +380,62 @@ function ClearOrderForm()
 	});
 }
 
-function UpdateOrder(orderNum, order_price = 0)
+function FormatOrderForOrderLabel(order)
 {
-	var product_details = [];
-	
-
-
-	$('.order_product').each(function()
-	{
-		if(($(this).val() == "") || ($(this).val() == 0))
-		{
-			return;
-		}
-		product_details.push({product_id: $(this).attr("id"), product_quantity: $(this).val(), product_cost: $(this).attr("cost")});
-		$(this).val("");
-		$("#total_order_price_label").text("R0.00");
-	});
-
-	
 	$.ajax(
 	{
-		url : "update_order.php",
-		data : {order_number: orderNum, products: product_details},
-		dataType : "json",
+		url : "format_order_details_to_html.php",
+		data : {order: order},
+		dataType : "text",
 		type : 'POST',
 		success : function(result)
 		{
-			ViewOrdersTable();
-			$("#place_order_table").dialog('close');
+			// console.log(result);
+			return result;
 		},
         error : function(jqXHR, textStatus, errorThrown)
         {
             console.log(textStatus, errorThrown);
         }
 	});
+}
+
+function UpdateOrder(orderNum, order_price = 0)
+{
+	var product_info = GetProductInfoInOrder();
+	if(product_info.count != 0)
+	{
+		$.ajax(
+		{
+			url : "update_order.php",
+			data : {order_number: orderNum, products: product_info.products},
+			dataType : "text",
+			type : 'POST',
+			success : function(result)
+			{
+				if (!parseInt(result))
+				{
+					alert(result);
+				}
+				else
+				{
+					// $('#order_label_'+orderNum).prop('title', 'product_info.products');
+					ViewOrdersTable();
+					$("#user_money").text("Money: R" + parseInt(result).toFixed(2));
+					$("#place_order_table").dialog('close');
+					
+				}
+			},
+	        error : function(jqXHR, textStatus, errorThrown)
+	        {
+	            console.log(textStatus, errorThrown);
+	        }
+		});
+	}
+	else
+	{
+		ErrorDialog("Warning!", "Fields can not be empty");
+	}
 	$('#order_num_text_box').val("");
 }
 
@@ -418,8 +450,11 @@ function UpdateRow(result)
 	// console.log(result);
 }
 
-function  AddOrderToTable(order)
+function  AddOrderToTable(order, formatted_products)
 {
+	console.log(formatted_products);
+	// console.log(order.order_id);
+	// $('#order_label_'+order.order_id).prop('title', 'products');
 	// var buttons = "";
 	var status = "";
 	// var items = null;
@@ -460,7 +495,7 @@ function  AddOrderToTable(order)
 	
 	table.row.add([
 					order.firstname,
-					"<div title=''><font color='purple'>"+order.order_id+"</font></div>",
+					"<div id='order_label_" + order.order_id + "' title='" + formatted_products + "'><font color='purple'>"+order.order_id+"</font></div>",
 					"R" + order.value,
 					order.order_date,
 					order.order_update,
