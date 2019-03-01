@@ -1,4 +1,5 @@
 var table = null;
+var formatted_html = "auto";
 
 $(document).ready( function () {
    	ViewOrdersTable();
@@ -36,10 +37,10 @@ function ViewOrdersTable ()
 							order_date: rows[index].order_date,
 							order_update: rows[index].order_update,
 							status: rows[index].Status,
-							buttons: rows[index].buttons
+							buttons: rows[index].buttons,
+							order_html: rows[index].order_html
 							};
-							var wang = FormatOrderForOrderLabel(order);
-					AddOrderToTable(order, wang);
+					AddOrderToTable(order, formatted_html);
 				}
 			}
 			else
@@ -52,6 +53,53 @@ function ViewOrdersTable ()
 			console.log(textStatus, errorThrown);
 		}
 	});
+}
+
+function  AddOrderToTable(order, formatted_products)
+{
+	var status = "";
+	if(!table)
+	{
+		table = $('#view_order_table').DataTable(
+		{
+			dom: 'Bfrtip',
+			buttons: 
+			[
+    			'copy', 'csv', 'excel', 'pdf', 'print'
+			]
+		});
+	}
+
+	// GetButtons(order);
+
+	if (order.status == "Placed") /*Placed*/
+	{
+		// buttons = "<input id='row_button_update_order_"+order.order_id+"' type='button' class='ui-button ui-corner-all ui-widget' onclick='OrderDialog("+order.order_id+")' value='Update order'><input id='row_button_cancel_order_"+order.order_id+"' type='button' class='ui-button ui-corner-all ui-widget' onclick='StatusUpdate("+order.order_id+")' value='Cancel order'>";
+		status = "<font color='blue'>"+order.status+"</font>";
+	} else if (order.status == "Delivered") /*Delivered*/
+	{
+		// buttons = "<input id='row_button_collect_order_"+order.order_id+"' type='button' class='ui-button ui-corner-all ui-widget' onclick='CollectOrder("+order.order_id+")' value='Collect order'>";
+		status = "<font color='green'>"+order.status+"</font>";
+	} else if (order.status == "Canceled") /*Canceled*/
+	{
+		// buttons = "";
+		status = "<font color='red'>"+order.status+"</font>";
+	} else /*Collected, Archived*/
+	{
+		// buttons = "";
+		status = order.status;
+	}
+
+	table.row.add([
+					order.firstname,
+					"<div id='order_label_" + order.order_id + "' title='" + order.order_html + "'><font color='purple'>"+order.order_id+"</font></div>",
+					"R" + order.value,
+					order.order_date,
+					order.order_update,
+					status,
+					order.buttons
+					// row_buttons
+				]).draw();
 }
 
 function isEmpty(obj)
@@ -380,26 +428,6 @@ function ClearOrderForm()
 	});
 }
 
-function FormatOrderForOrderLabel(order)
-{
-	$.ajax(
-	{
-		url : "format_order_details_to_html.php",
-		data : {order: order},
-		dataType : "text",
-		type : 'POST',
-		success : function(result)
-		{
-			// console.log(result);
-			return result;
-		},
-        error : function(jqXHR, textStatus, errorThrown)
-        {
-            console.log(textStatus, errorThrown);
-        }
-	});
-}
-
 function UpdateOrder(orderNum, order_price = 0)
 {
 	var product_info = GetProductInfoInOrder();
@@ -448,61 +476,6 @@ function UpdateRow(result)
 	// table.row( this ).data( result ).draw();
 
 	// console.log(result);
-}
-
-function  AddOrderToTable(order, formatted_products)
-{
-	console.log(formatted_products);
-	// console.log(order.order_id);
-	// $('#order_label_'+order.order_id).prop('title', 'products');
-	// var buttons = "";
-	var status = "";
-	// var items = null;
-
-	if(!table)
-	{
-		table = $('#view_order_table').DataTable(
-		{
-			dom: 'Bfrtip',
-			buttons: 
-			[
-    			'copy', 'csv', 'excel', 'pdf', 'print'
-			]
-		});
-	}
-
-	// GetButtons(order);
-
-	if (order.status == "Placed") /*Placed*/
-	{
-		// buttons = "<input id='row_button_update_order_"+order.order_id+"' type='button' class='ui-button ui-corner-all ui-widget' onclick='OrderDialog("+order.order_id+")' value='Update order'><input id='row_button_cancel_order_"+order.order_id+"' type='button' class='ui-button ui-corner-all ui-widget' onclick='StatusUpdate("+order.order_id+")' value='Cancel order'>";
-		status = "<font color='blue'>"+order.status+"</font>";
-	} else if (order.status == "Delivered") /*Delivered*/
-	{
-		// buttons = "<input id='row_button_collect_order_"+order.order_id+"' type='button' class='ui-button ui-corner-all ui-widget' onclick='CollectOrder("+order.order_id+")' value='Collect order'>";
-		status = "<font color='green'>"+order.status+"</font>";
-	} else if (order.status == "Canceled") /*Canceled*/
-	{
-		// buttons = "";
-		status = "<font color='red'>"+order.status+"</font>";
-	} else /*Collected, Archived*/
-	{
-		// buttons = "";
-		status = order.status;
-	}
-
-	// items = GetProductNames(order.order_id);
-	
-	table.row.add([
-					order.firstname,
-					"<div id='order_label_" + order.order_id + "' title='" + formatted_products + "'><font color='purple'>"+order.order_id+"</font></div>",
-					"R" + order.value,
-					order.order_date,
-					order.order_update,
-					status,
-					order.buttons
-					// row_buttons
-				]).draw();
 }
 
 function ShowInventory()

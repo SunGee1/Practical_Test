@@ -39,6 +39,7 @@
 
 	while($row = mysqli_fetch_object($result))
 	{
+		$row->order_html = GetHTML($row->id);
 		$row->buttons = GetButtons($row);
 		$rows[] = $row;
 	}
@@ -90,6 +91,27 @@
 		}
 		
 		return $button;
+	}
+
+	function GetHTML($order_id)
+	{
+		global $db_con;
+		$query = "SELECT p.description AS Name, p.cost AS Price, op.quantity AS Amount
+					FROM order_product op
+					LEFT JOIN product p ON id = op.product_ref
+					WHERE order_ref = {$order_id}";
+		$result = $db_con->query($query);
+		$rows = array();
+		while ($row = mysqli_fetch_array($result)) {
+			$rows[] = $row;
+		}
+
+		$div = array();
+		foreach ($rows as $value) {
+		$div[] = $value['Name']." @ R".$value['Price']." x ".$value['Amount'];
+		}
+		$div = implode("\n", $div);
+		return $div;
 	}
 	
 	die(json_encode($rows));
