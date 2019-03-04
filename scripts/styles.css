@@ -113,3 +113,37 @@ body
   color:red;
   font-size: 15px;
 }
+
+.wol
+{
+  /*display: block;*/
+  /*margin: 0 auto;*/
+  /*margin-top: 25px;*/
+  /*margin-bottom: 25px;*/
+  /*margin: 25px;*/
+  /*width: 70px;*/
+  /*height: 300px;*/
+  /*border: 5px solid green;*/
+  /*margin: auto;*/
+  /*display: -webkit-flex;
+  display: flex;*/
+  /*-webkit-flex-wrap: wrap;*/
+  /*flex-wrap: wrap;*/
+  /*-webkit-align-content: center;*/
+  /*align-content: center;*/
+  /*color:red;*/
+}
+
+.gamble_label
+{
+  padding: 20px;
+  border: 2px solid green;
+}
+
+.button
+{
+   display: block;
+   margin: 0 auto;
+   margin-top: 25px;
+   margin-bottom: 50px;
+}

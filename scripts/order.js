@@ -55,7 +55,7 @@ function ViewOrdersTable ()
 	});
 }
 
-function  AddOrderToTable(order, formatted_products)
+function AddOrderToTable(order, formatted_products)
 {
 	var status = "";
 	if(!table)
@@ -248,6 +248,7 @@ function PlaceOrder ()
 				{
 					// $('#order_label_'+orderNum).prop('title', 'product_info.products');
 					AddOrderToTable(result, product_info.products);
+					ViewOrdersTable();
 					$("#user_money").text("R"+result.enough_money);
 					$("#place_order_table").dialog('close');
 				}
@@ -732,6 +733,86 @@ function GetArchivedOrders()
     });
 }
 
+function GambleDialog()
+{
+	$("#gamble").append("<p>To make money, pay and roll the dice.</p>");
+	$("#gamble").append("<label>Place money: </label>");
+	$("#gamble").append("<input type='text' style='width: 65px' maxlength='4'></input>");
+	$("#gamble").append("<br>");
+	$("#gamble").append("<input type='button' onclock='' value='Roll Dice' class='button' onclick='RollDice()'></input>");
+	// $("#gamble").append("<input type='button' onclock='' value='Roll Dice' style='display: block; margin: 0 auto; margin-top: 25px; margin-bottom: 25px';></input>");
+	// $("#gamble").append("<br>");
+	$("#gamble").append("<label>Reward: </label><label id='reward_label' class='gamble_label'>R0.00</label>");
+	// $.ajax(
+	// {
+	// 	url : "gamble.php",
+	// 	// data : {orderNum : order_num},
+	// 	// type : "POST",
+	// 	dataType : "json",
+	// 	success : function(result)
+	// 	{
+			$("#gamble").dialog
+			(
+				{
+					title: "Gamble",
+					resizable: false,
+					modal: true,
+					height: "450",
+					width: "365px",
+					buttons: 
+					{
+			    	    Cancel: function() 
+			    	    {
+			    	    	$("#gamble").empty();
+			    	    	$("#reward_label").html("R0.00");
+			    	    	$(this).dialog('close');
+			    	    	// $("#total_order_price_label").text("R0.00");
+			    	    }
+					}
+				}
+			);
+// 		},
+//         error : function(jqXHR, textStatus, errorThrown)
+//         {
+//             console.log(textStatus, errorThrown);
+//         }
+//     });
+}
+
+function RollDice()
+{
+	var bet = $("#gamble").find("input[type=text]").val();
+	var user_money = $("#user_money").html().replace("Money: R", "");
+	if (parseFloat(bet) <= parseFloat(user_money))
+	{
+		// console.log(user_money);
+		// console.log("You have won R1,000,000.00");
+		$.ajax(
+		{
+			url : "gamble.php",
+			data : {bet_placed : bet, user_money: user_money},
+			type : "POST",
+			dataType : "json",
+			success : function(result)
+			{
+				console.log(result);
+				$("#user_money").html("Money: R" + parseFloat(result.user_money).toFixed(2));
+				$("#reward_label").html("R" + result.reward);
+			},
+	        error : function(jqXHR, textStatus, errorThrown)
+	        {
+	            console.log(textStatus, errorThrown);
+	        }
+	    });
+	}
+	else
+	{
+		ErrorDialog("Please note", "You do not have enough money to place the bet.");
+	}
+
+		
+}
+
 function ErrorDialog(dialog_title, error_message)
 {
 	$('#error_dialog').html(error_message);
@@ -752,6 +833,3 @@ function ErrorDialog(dialog_title, error_message)
 		}
 	);
 }
-
-// <input type="text" id="sell_text_box" style="width: 65px" maxlength="5">
-

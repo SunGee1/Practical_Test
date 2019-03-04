@@ -59,6 +59,7 @@
 				$statement->execute();
 				$response->value += $product->product_quantity * $product->product_cost;
 			}
+			$response->value = number_format($response->value, 2, '.', '');
 		}
 		$total_order_price = $total_price;
 		$new_user_money = ($total_user_money->money - $total_order_price);
@@ -74,7 +75,6 @@
 	{
 		$response->not_enough_money = "You do not have enough money.";
 	}
-
 	die(json_encode($response));
 
 ?>
